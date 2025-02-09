@@ -1,0 +1,147 @@
+.frame {
+  bottom: 0;
+  clip-path: inset(0% 10% 100%);
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 150;
+
+  background: hsla(10, 66%, 43%, 0.8);
+  backdrop-filter: blur(16px);
+  mask-image: hsla(10, 66%, 43%, 0.8);
+}
+
+.wrapper {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.menu {
+  height: 100vh;
+  left: 50%;
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  width: 100vw;
+  z-index: 150;
+
+  .content {
+    position: relative;
+    z-index: 1400;
+
+    @include-media ('tablet') {
+    }
+
+    @include-media ('desktop') {
+    }
+
+    .box {
+      height: desktop-vw(700px);
+      width: desktop-vw(1300px);
+    }
+
+    .mask {
+      clip-path: inset(0% 10% 100%);
+      position: relative;
+    }
+
+    .imgC {
+      display: none;
+
+      @include-media ('tablet') {
+        display: block;
+        height: tablet-vw(650px);
+        width: tablet-vw(400px);
+      }
+
+      @include-media ('desktop') {
+        height: desktop-vw(600px);
+        width: desktop-vw(400px);
+      }
+    }
+
+    .img {
+      display: none;
+
+      @include-media ('tablet') {
+        display: block;
+        height: tablet-vw(650px);
+      }
+
+      @include-media ('desktop') {
+        height: desktop-vw(650px);
+      }
+    }
+
+    .nav {
+      margin-bottom: mobile-vw(100px);
+
+      @include-media ('desktop') {
+        margin-bottom: desktop-vw(150px);
+      }
+
+      .navList {
+        height: auto;
+        gap: mobile-vw(16px);
+
+        @include-media ('desktop') {
+          height: desktop-vw(350px);
+          column-gap: desktop-vw(120px);
+          row-gap: desktop-vw(14px);
+        }
+
+        @include-media ('hover') {
+          &:hover {
+            .navItem {
+              opacity: 0.5;
+            }
+
+            .navItem:hover {
+              opacity: 1;
+            }
+          }
+        }
+      }
+
+      .navItem {
+        color: var(--white);
+        font-family: var(--font-halenoir);
+        font-size: mobile-vw(18px);
+        font-weight: 300;
+        text-align: center;
+        transition: 300ms opacity ease;
+
+        @include-media ('tablet') {
+          font-size: tablet-vw(24px);
+          text-align: left;
+        }
+
+        @include-media ('desktop') {
+          font-size: desktop-vw(32px);
+        }
+      }
+    }
+
+    .logoC {
+      height: mobile-vw(100px);
+      left: 50%;
+      position: absolute;
+      right: auto;
+      top: mobile-vw(10px);
+      transform: translateX(-50%);
+      transform-origin: top center;
+      transition: 400ms all ease;
+      z-index: 130;
+
+      @include-media ('desktop') {
+        height: desktop-vw(110px);
+        top: desktop-vw(20px);
+      }
+    }
+  }
+}

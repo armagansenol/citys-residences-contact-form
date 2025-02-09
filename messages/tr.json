@@ -1,0 +1,38 @@
+{
+    "metadata": {
+        "default": {
+            "title": "City's Residences",
+            "description": "Mustafa V. Koç Golf Sahası, titizlikle tasarlanmış fairway’leri ve yemyeşil manzaraları bir araya getirerek golf tutkunları için eşsiz bir deneyim sunuyor."
+        },
+        "about": {
+            "title": "Hakkımızda | City's Residences",
+            "description": "Mustafa V. Koç Golf Sahası, titizlikle tasarlanmış fairway’leri ve yemyeşil manzaraları bir araya getirerek golf tutkunları için eşsiz bir deneyim sunuyor."
+        },
+        "gallery": {
+            "title": "Galeri | City's Residences",
+            "description": "Mustafa V. Koç Golf Sahası, titizlikle tasarlanmış fairway’leri ve yemyeşil manzaraları bir araya getirerek golf tutkunları için eşsiz bir deneyim sunuyor."
+        }
+    },
+    "localeSwitcher": {
+        "label": "tr",
+        "locale": "{locale, select, tr}"
+    },
+    "routes": {
+        "about": "HAKKIMIZDA",
+        "gallery": "GALERİ",
+        "contact": "İLETİŞİM"
+    },
+    "footer": {
+        "address": "Golf Sahası",
+        "copyright": "© Mustafa V. Koç Golf Sahası 2024"
+    },
+    "cursor": {
+        "view": "Videoyu İzleyin"
+    },
+    "facilities": {
+        "title": "TESİSLER"
+    },
+    "gallery": {
+        "title": "GALERİ"
+    }
+}

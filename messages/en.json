@@ -1,0 +1,38 @@
+{
+    "metadata": {
+        "default": {
+            "title": "City's Residences",
+            "description": "The City's Residences offers a unique experience for golf enthusiasts by combining meticulously designed fairways with lush green landscapes."
+        },
+        "about": {
+            "title": "About | City's Residences",
+            "description": "The City's Residences offers a unique experience for golf enthusiasts by combining meticulously designed fairways with lush green landscapes."
+        },
+        "gallery": {
+            "title": "Gallery | City's Residences",
+            "description": "The City's Residences offers a unique experience for golf enthusiasts by combining meticulously designed fairways with lush green landscapes."
+        }
+    },
+    "localeSwitcher": {
+        "label": "en",
+        "locale": "{locale, select, en}"
+    },
+    "routes": {
+        "about": "ABOUT US",
+        "gallery": "GALLERY",
+        "contact": "İLETİŞİM"
+    },
+    "footer": {
+        "address": "Golf Course",
+        "copyright": "© City's Residences 2024"
+    },
+    "cursor": {
+        "view": "Watch the Video"
+    },
+    "facilities": {
+        "title": "FACILITIES"
+    },
+    "gallery": {
+        "title": "GALLERY"
+    }
+}

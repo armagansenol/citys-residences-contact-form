@@ -1,0 +1,5 @@
+.video {
+  @include dims(100%);
+  display: block;
+  object-fit: cover;
+}

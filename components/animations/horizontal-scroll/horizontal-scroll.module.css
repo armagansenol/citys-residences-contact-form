@@ -1,0 +1,121 @@
+.frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  outline: desktop-vw(15px) solid var(--bricky-brick);
+  outline-offset: desktop-vw(-15px);
+  pointer-events: none;
+  z-index: 100;
+}
+.text {
+  color: #f2f2f2;
+  font-family: var(--font-lexend-giga);
+  font-size: desktop-vw(60px);
+  font-weight: 700;
+  line-height: 1.25;
+  position: absolute;
+  top: desktop-vw(50px);
+  left: desktop-vw(100px);
+  text-align: center;
+  white-space: nowrap;
+  width: desktop-vw(1230px);
+  z-index: 150;
+}
+.bgImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+
+  /* &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.15);
+  } */
+
+  .img {
+    transform: scale(1.33);
+    transform-origin: center center;
+  }
+}
+.infoCardC {
+  position: absolute;
+  left: desktop-vw(100px);
+  bottom: desktop-vw(100px);
+  width: desktop-vw(400px);
+  /* height: desktop-vw(120px); */
+}
+.infoCard {
+  border-radius: desktop-vw(8px);
+  color: var(--white);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  padding: desktop-vw(24px);
+  isolation: isolate;
+  display: flex;
+
+  .infoText {
+    color: var(--white);
+    font-size: desktop-vw(16px);
+    font-weight: 400;
+    font-family: var(--font-halenoir);
+    line-height: 1.5;
+    position: relative;
+    text-align: left;
+    width: desktop-vw(400px);
+    z-index: 150;
+  }
+
+  .backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    border-radius: desktop-vw(8px);
+    background: hsla(10, 66%, 43%, 0.6);
+    pointer-events: none;
+    backdrop-filter: blur(16px);
+    mask-image: hsla(10, 66%, 43%, 0.6);
+    z-index: 50;
+  }
+}
+.container {
+  position: relative;
+  width: 500%;
+  height: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+}
+.panel {
+  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  /* &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    outline-right: desktop-vw(55px) solid var(--bricky-brick);
+    outline-offset: desktop-vw(-55px);
+    background: linear-gradient(to left, hsla(10, 66%, 43%, 0.6), hsla(10, 66%, 43%, 0));
+    z-index: 100;
+  } */
+}

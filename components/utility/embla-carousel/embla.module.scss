@@ -1,0 +1,66 @@
+.embla {
+  --slide-spacing: #{var(--slide-spacing)};
+  width: 100%;
+
+  @include mobile {
+    --slide-spacing: #{var(--slide-spacing)};
+  }
+
+  .emblaViewport {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+
+    @include mobile {
+      padding: var(--slide-spacing);
+    }
+  }
+
+  .emblaContainer {
+    backface-visibility: hidden;
+    display: flex;
+    touch-action: pan-y;
+    margin-left: calc(var(--slide-spacing) * -1);
+    // width: 100%;
+
+    .emblaSlide {
+      @include dims(100vw, 100%);
+      min-width: 0;
+      padding-left: var(--slide-spacing);
+      position: relative;
+      flex-shrink: 0;
+    }
+  }
+
+  .emblaBtn {
+    @include dims(desktop-vw(36px));
+    transition: 400ms opacity ease;
+    z-index: 50;
+
+    @include mobile {
+      @include dims(mobile-vw(20px));
+    }
+
+    &:disabled {
+      opacity: 0.3;
+    }
+
+    &.next {
+      @include position(absolute, 50%, desktop-vw(40px), auto, auto);
+      transform: translateY(-50%);
+
+      @include mobile {
+        @include position(absolute, 50%, mobile-vw(5px), auto, auto);
+      }
+    }
+
+    &.prev {
+      @include position(absolute, 50%, auto, auto, desktop-vw(40px));
+      transform: translateY(-50%);
+
+      @include mobile {
+        @include position(absolute, 50%, auto, auto, mobile-vw(5px));
+      }
+    }
+  }
+}

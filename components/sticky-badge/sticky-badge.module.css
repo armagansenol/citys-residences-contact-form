@@ -1,0 +1,27 @@
+.stickyBadge {
+  background-color: var(--bricky-brick);
+  height: desktop-vw(200px);
+  width: desktop-vw(38px);
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  border-top-left-radius: desktop-vw(20px);
+  border-bottom-left-radius: desktop-vw(20px);
+  overflow: hidden;
+
+  > span {
+    color: var(--white);
+    display: block;
+    font-family: var(--font-halenoir);
+    font-size: desktop-vw(18px);
+    font-weight: 500;
+    left: 50%;
+    position: absolute;
+    transform: translate(-47.5%, -50%) rotate(-90deg);
+    transform-origin: center center;
+    top: 50%;
+    white-space: nowrap;
+  }
+}

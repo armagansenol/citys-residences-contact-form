@@ -1,0 +1,10 @@
+.submitButton {
+  width: desktop-vw(260px);
+  height: desktop-vw(50px);
+  border-radius: desktop-vw(10px);
+  background-color: var(--white);
+  color: var(--black);
+  font-size: desktop-vw(16px);
+  font-weight: 600;
+  text-transform: uppercase;
+}

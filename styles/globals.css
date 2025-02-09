@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: var(--black);
+  --foreground: var(--white);
+
+  --header-height: mobile-vw(64px);
+
+  @include-media ('desktop') {
+    --header-height: desktop-vw(84px);
+  }
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+/* Core styles that shouldn't be reset */
+body {
+  min-height: 100vh;
+  overscroll-behavior: none;
+  background-color: var(--theme-primary);
+  color: var(--theme-secondary);
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-alexandria), Arial, Helvetica, sans-serif;
+}
+
+*::selection {
+  background-color: var(--theme-secondary);
+  color: var(--theme-primary);
+}
+
+.gsap-marker-end,
+.gsap-marker-start,
+.gsap-marker-scroller-end,
+.gsap-marker-scroller-start {
+  z-index: z-index("gsap-markers") !important;
+}
+
+.inherit-dims {
+  height: inherit;
+  width: inherit;
+}
+
+.add-header-height {
+  margin-top: var(--header-height);
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}

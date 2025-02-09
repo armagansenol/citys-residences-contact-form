@@ -1,0 +1,18 @@
+.selectTrigger {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: desktop-vw(14px);
+  color: var(--white);
+
+  &.dark {
+    border: 1px solid rgba(183, 61, 37, 0.2);
+    color: var(--bricky-brick);
+  }
+}
+
+.selectContent {
+  background: var(--white);
+
+  .selectItem {
+    color: var(--black);
+  }
+}
