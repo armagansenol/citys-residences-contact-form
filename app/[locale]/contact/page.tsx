@@ -1,16 +1,11 @@
-"use client"
-
 import { ContactForm } from "@/components/form-contact"
 import { LogoHorizontal } from "@/components/icons"
 import { LocaleSwitcher } from "@/components/locale-switcher"
 import { Video } from "@/components/utility/video"
-import { useRef } from "react"
 
 export default function Contact() {
-  const wrapperRef = useRef<HTMLDivElement>(null)
-
   return (
-    <div className="flex flex-col-reverse lg:flex-col xl:grid grid-cols-2" ref={wrapperRef}>
+    <div className="flex flex-col-reverse lg:flex-col xl:grid grid-cols-2">
       <div className="col-span-1 h-screen flex flex-col">
         <div className="py-4 lg:py-5 px-4 lg:px-8 lg:pb-0">
           <div className="flex items-center justify-between border-b border-bricky-brick-light py-4">
