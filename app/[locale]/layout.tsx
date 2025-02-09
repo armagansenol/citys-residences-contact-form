@@ -10,7 +10,6 @@ import localFont from "next/font/local"
 import { GSAP } from "@/components/gsap"
 import { ReactQueryProvider } from "@/components/react-query-provider"
 import { SmoothScroll } from "@/components/smooth-scroll"
-import { StickyBadge } from "@/components/sticky-badge"
 
 import { Lexend_Giga } from "next/font/google"
 
@@ -101,10 +100,7 @@ export default async function LocaleLayout({
       </head>
       <body className={`${halenoir.variable} ${lexendGiga.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <ReactQueryProvider>
-            {children}
-            <StickyBadge />
-          </ReactQueryProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
         </NextIntlClientProvider>
         <GSAP scrollTrigger={true} />
         <SmoothScroll root={true} />
