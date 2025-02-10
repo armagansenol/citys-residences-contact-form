@@ -6,12 +6,10 @@ import type { themeNames } from "@/styles/config.mjs"
 import cn from "clsx"
 import type { LenisOptions } from "lenis"
 import { usePathname } from "next/navigation"
-import { useEffect } from "react"
 import Script from "next/script"
+import { useEffect } from "react"
 
-import { Header } from "@/components/header"
 import { SmoothScroll } from "@/components/smooth-scroll"
-import { Footer } from "@/components/footer"
 
 interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   theme?: (typeof themeNames)[number]
@@ -28,12 +26,10 @@ export function Wrapper({ children, theme = "light", className, lenis, ...props 
 
   return (
     <>
-      <Header />
       <main className={cn(s.main, className)} {...props}>
         {children}
         <Script id="theme-script">{`document.documentElement.setAttribute('data-theme', '${theme}');`}</Script>
       </main>
-      <Footer />
       {lenis && <SmoothScroll root />}
     </>
   )

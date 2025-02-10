@@ -26,7 +26,7 @@
                     "error": "Phone number is required"
                 },
                 "email": {
-                    "placeholder": "ENTER ADDRESS*",
+                    "placeholder": "EMAIL ADDRESS*",
                     "error": "Please enter a valid email address"
                 },
                 "residenceType": {
@@ -34,7 +34,7 @@
                     "error": "Please select a residence type"
                 },
                 "howDidYouHearAboutUs": {
-                    "placeholder": "HOW DID YOU HEAR ABOUT US*",
+                    "placeholder": "HOW DID YOU HEAR ABOUT US?*",
                     "error": "Please select"
                 },
                 "message": {

@@ -41,7 +41,7 @@
                     "placeholder": "MESAJ"
                 },
                 "consent": {
-                    "placeholder": "Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin Aydınlatma Metni'ni okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin Açık Rıza Metni'ni okudum, kabul ediyorum.",
+                    "placeholder": "Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin Aydınlatma Metni'ni okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin Açık Rıza Metni'ni okudum, kabul ediyorum.",
                     "error": "Lütfen şartları kabul ediniz"
                 }
             },
