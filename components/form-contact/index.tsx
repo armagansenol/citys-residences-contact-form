@@ -218,12 +218,8 @@ export function ContactForm({ translations }: FormContactProps) {
   }
 
   useEffect(() => {
-    const errors = Object.values(form.formState.errors)
-
-    if (errors.length > 0) {
-      lenis?.resize()
-    }
-  }, [form.formState.errors, lenis])
+    lenis?.resize()
+  }, [form.formState, lenis])
 
   return (
     <Form {...form}>
