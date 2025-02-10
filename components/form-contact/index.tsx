@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { AnimatePresence, motion } from "motion/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Textarea } from "@/components/ui/textarea"
 import { countryPhoneCodes } from "@/lib/constants"
 import { FormTranslations } from "@/types"
+import { useLenis } from "lenis/react"
 import { useLocale } from "next-intl"
 
 const getFormSchema = (translations: FormTranslations) =>
@@ -128,6 +129,7 @@ interface FormContactProps {
 
 export function ContactForm({ translations }: FormContactProps) {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+  const lenis = useLenis()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(getFormSchema(translations)),
@@ -214,6 +216,14 @@ export function ContactForm({ translations }: FormContactProps) {
   const onSubmit = (data: FormValues) => {
     mutation.mutate(data)
   }
+
+  useEffect(() => {
+    const errors = Object.values(form.formState.errors)
+
+    if (errors.length > 0) {
+      lenis?.resize()
+    }
+  }, [form.formState.errors, lenis])
 
   return (
     <Form {...form}>
