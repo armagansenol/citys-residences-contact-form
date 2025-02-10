@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react"
 import cn from "clsx"
 import { ArrowRight } from "lucide-react"
 import { useRef, useState } from "react"
+import { useWindowSize } from "react-use"
 
 interface AnimatedButtonProps {
   text: string
@@ -17,6 +18,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
   const [hover, setHover] = useState(false)
   const buttonRef = useRef<HTMLSpanElement>(null)
   const buttonTL = useRef<gsap.core.Timeline>()
+  const { width } = useWindowSize({ initialWidth: 1680 })
 
   useGSAP(
     () => {
@@ -56,7 +58,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
           ".gsap-arrow-left",
           {
             xPercent: -200,
-            duration: 1.6,
+            duration: 1.4,
             ease,
           },
           "s"
@@ -74,7 +76,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
           ".gsap-btn-right",
           {
             xPercent: 100,
-            duration: 1.2,
+            duration: 0.8,
             ease,
           },
           "s"
@@ -87,6 +89,11 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
 
   useGSAP(
     () => {
+      if (width < 1200) {
+        buttonTL.current?.progress(1)
+        return
+      }
+
       if (hover) {
         buttonTL.current?.play()
       } else {
@@ -94,13 +101,16 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
       }
     },
     {
-      dependencies: [hover],
+      dependencies: [hover, width],
     }
   )
 
   return (
     <span
-      className={cn(s.button, "gsap-button flex items-center justify-center cursor-pointer relative overflow-hidden")}
+      className={cn(
+        s.button,
+        "gsap-button flex items-center justify-center cursor-pointer relative overflow-hidden rounded-md"
+      )}
       ref={buttonRef}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}

@@ -7,13 +7,15 @@
   height: var(--height);
   width: var(--width);
   border: 1px solid var(--bricky-brick);
-  border-radius: desktop-vw(5px);
   padding: var(--padding);
 
   @include-media ('mobile') {
     --padding: mobile-vw(4px);
-    --height: mobile-vw(36px);
-    --width: mobile-vw(180px);
+    --height: mobile-vw(46px);
+    --width: mobile-vw(220px);
+
+    background-color: var(--bricky-brick);
+    color: var(--white);
 
     .text {
       font-size: mobile-vw(12px);
@@ -21,12 +23,15 @@
   }
 
   @include-media ('tablet') {
-    --padding: mobile-vw(2px);
-    --height: mobile-vw(30px);
-    --width: mobile-vw(150px);
+    --padding: desktop-vw(6px);
+    --height: desktop-vw(64px);
+    --width: desktop-vw(300px);
+
+    background-color: var(--bricky-brick);
+    color: var(--white);
 
     .text {
-      font-size: mobile-vw(10px);
+      font-size: desktop-vw(24px);
     }
   }
 
@@ -35,13 +40,11 @@
     --height: desktop-vw(42px);
     --width: desktop-vw(200px);
 
+    background-color: var(--white);
+    color: var(--bricky-brick);
+
     .text {
       font-size: desktop-vw(14px);
-    }
-  }
-
-  @include-media ('hover') {
-    &:hover {
     }
   }
 
