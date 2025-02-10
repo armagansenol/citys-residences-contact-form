@@ -14,7 +14,7 @@ interface AnimatedButtonProps {
   path?: string
 }
 
-function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
+export function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
   const [hover, setHover] = useState(false)
   const buttonRef = useRef<HTMLSpanElement>(null)
   const buttonTL = useRef<gsap.core.Timeline>()
@@ -40,7 +40,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
           ".gsap-text",
           {
             color: "white",
-            duration: 0.8,
+            duration: 0.4,
             ease,
           },
           "s"
@@ -49,7 +49,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
           ".gsap-bg",
           {
             y: 0,
-            duration: 0.8,
+            duration: 0.4,
             ease,
           },
           "s"
@@ -58,7 +58,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
           ".gsap-arrow-left",
           {
             xPercent: -200,
-            duration: 1.4,
+            duration: 1,
             ease,
           },
           "s"
@@ -67,7 +67,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
           ".gsap-btn-left",
           {
             xPercent: -100,
-            duration: 1.2,
+            duration: 0.8,
             ease,
           },
           "s"
@@ -76,7 +76,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
           ".gsap-btn-right",
           {
             xPercent: 100,
-            duration: 0.8,
+            duration: 0.4,
             ease,
           },
           "s"
@@ -90,7 +90,7 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
   useGSAP(
     () => {
       if (width < 1200) {
-        buttonTL.current?.progress(1)
+        buttonTL.current?.progress(0)
         return
       }
 
@@ -140,5 +140,3 @@ function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
     </span>
   )
 }
-
-export default AnimatedButton

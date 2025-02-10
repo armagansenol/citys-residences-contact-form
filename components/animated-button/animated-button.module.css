@@ -13,49 +13,35 @@
     --padding: mobile-vw(4px);
     --height: mobile-vw(56px);
     --width: mobile-vw(240px);
-
-    background-color: var(--bricky-brick);
-    color: var(--white);
-
-    .text {
-      font-size: mobile-vw(15px);
-    }
   }
 
   @include-media ('tablet') {
     --padding: desktop-vw(6px);
     --height: desktop-vw(64px);
     --width: desktop-vw(300px);
-
-    background-color: var(--bricky-brick);
-    color: var(--white);
-
-    .text {
-      font-size: desktop-vw(24px);
-    }
   }
 
   @include-media ('desktop') {
     --padding: desktop-vw(6px);
     --height: desktop-vw(42px);
     --width: desktop-vw(200px);
-
-    background-color: var(--white);
-    color: var(--bricky-brick);
-
-    .text {
-      font-size: desktop-vw(14px);
-    }
   }
 
   .text {
-    color: var(--bricky-brick);
     font-family: var(--font-halenoir);
-    font-size: desktop-vw(14px);
+    font-size: mobile-vw(15px);
     font-weight: 500;
     line-height: 1;
-    white-space: nowrap;
     padding-top: 2px;
+    white-space: nowrap;
+
+    @include-media ('tablet') {
+      font-size: desktop-vw(24px);
+    }
+
+    @include-media ('desktop') {
+      font-size: desktop-vw(14px);
+    }
   }
 
   .iconC {
