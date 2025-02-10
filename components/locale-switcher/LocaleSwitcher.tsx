@@ -31,7 +31,7 @@ export default function LocaleSwitcher({ theme = "light" }: LocaleSwitcherProps)
 
   return (
     <Select value={locale} onValueChange={setLocale}>
-      <SelectTrigger className={cn(s.selectTrigger, "rounded-md h-8", s[theme])}>
+      <SelectTrigger className={cn(s.selectTrigger, "rounded-md h-8 text-sm gap-1", s[theme])}>
         <SelectValue placeholder={locale.toUpperCase()} />
       </SelectTrigger>
       <SelectContent className={cn(s.selectContent)}>
