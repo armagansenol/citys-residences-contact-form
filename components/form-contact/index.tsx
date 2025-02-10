@@ -109,7 +109,7 @@ const FormSelect = ({
       <FormItem>
         <FormControl>
           <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
-            <SelectTrigger className="h-11 text-sm border border-bricky-brick-light rounded-md text-neutral-950 cursor-pointer px-4">
+            <SelectTrigger className="h-11 text-base md:text-sm border border-bricky-brick-light rounded-md text-neutral-950 cursor-pointer px-2 lg:px-4">
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent className="text-neutral-950">
@@ -281,11 +281,13 @@ export function ContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem className="space-y-0 pt-2">
-                <FormLabel className="text-neutral-950 font-normal pl-4 leading-none block -mb-7">MESAJINIZ</FormLabel>
+                <FormLabel className="text-neutral-950 font-normal pl-2 lg:pl-4 leading-none block -mb-8 lg:-mb-7 text-base md:text-sm">
+                  MESAJINIZ
+                </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    className={`${commonInputStyles} min-h-[140px] p-4 pt-8 rounded-md border border-bricky-brick-light`}
+                    className={`${commonInputStyles} min-h-[140px] p-2 lg:p-4 pt-8 rounded-md border border-bricky-brick-light`}
                   />
                 </FormControl>
                 <FormMessage />

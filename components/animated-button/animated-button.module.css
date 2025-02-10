@@ -11,14 +11,14 @@
 
   @include-media ('mobile') {
     --padding: mobile-vw(4px);
-    --height: mobile-vw(46px);
-    --width: mobile-vw(220px);
+    --height: mobile-vw(56px);
+    --width: mobile-vw(240px);
 
     background-color: var(--bricky-brick);
     color: var(--white);
 
     .text {
-      font-size: mobile-vw(12px);
+      font-size: mobile-vw(15px);
     }
   }
 
