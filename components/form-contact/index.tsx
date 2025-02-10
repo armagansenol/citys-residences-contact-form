@@ -28,16 +28,8 @@ const getFormSchema = (translations: FormTranslations) =>
       .regex(/^\+?[1-9]\d{1,14}$/, { message: translations.inputs.phone.error })
       .refine((val) => /^\+?[0-9]+$/.test(val), { message: translations.inputs.phone.error }),
     email: z.string().email({ message: translations.inputs.email.error }),
-    residenceType: z
-      .enum(["x", "y", "z"], {
-        required_error: translations.inputs.residenceType.error,
-      })
-      .nullable(),
-    howDidYouHearAboutUs: z
-      .enum(["x", "y", "z"], {
-        required_error: translations.inputs.howDidYouHearAboutUs.error,
-      })
-      .nullable(),
+    residenceType: z.string().min(1, { message: translations.inputs.residenceType.error }),
+    howDidYouHearAboutUs: z.string().min(1, { message: translations.inputs.howDidYouHearAboutUs.error }),
     message: z.string(),
     consent: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.error }),
   })
@@ -145,8 +137,8 @@ export function ContactForm({ translations }: FormContactProps) {
       countryCode: "+90",
       phone: "",
       email: "",
-      residenceType: null,
-      howDidYouHearAboutUs: null,
+      residenceType: "",
+      howDidYouHearAboutUs: "",
       message: "",
       consent: false,
     },
