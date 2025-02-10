@@ -9,8 +9,8 @@ import localFont from "next/font/local"
 
 import { GSAP } from "@/components/gsap"
 import { ReactQueryProvider } from "@/components/react-query-provider"
-import { SmoothScroll } from "@/components/smooth-scroll"
 
+import { SmoothScroll } from "@/components/smooth-scroll"
 import { Lexend_Giga } from "next/font/google"
 
 const lexendGiga = Lexend_Giga({
