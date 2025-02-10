@@ -18,7 +18,7 @@
   @include-media ('tablet') {
     --padding: desktop-vw(6px);
     --height: desktop-vw(64px);
-    --width: desktop-vw(300px);
+    --width: desktop-vw(330px);
   }
 
   @include-media ('desktop') {
