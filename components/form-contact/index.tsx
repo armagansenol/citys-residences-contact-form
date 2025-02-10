@@ -109,15 +109,15 @@ const FormSelect = ({
       <FormItem>
         <FormControl>
           <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
-            <SelectTrigger className="h-11 text-sm border border-bricky-brick-light rounded-md text-neutral-900 cursor-pointer">
+            <SelectTrigger className="h-11 text-sm border border-bricky-brick-light rounded-md text-neutral-950 cursor-pointer px-4">
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
-            <SelectContent className="text-neutral-900">
+            <SelectContent className="text-neutral-950">
               <SelectGroup>
                 {options.map((option) => (
                   <SelectItem
                     key={option.value}
-                    className="focus:bg-neutral-50 focus:text-neutral-900 cursor-pointer"
+                    className="focus:bg-neutral-50 focus:text-neutral-950 cursor-pointer"
                     value={option.value}
                   >
                     {option.label}
@@ -216,15 +216,15 @@ export function ContactForm() {
                   <FormItem className="col-span-1">
                     <FormControl>
                       <Select onValueChange={field.onChange} value={field.value} defaultValue={"+90"}>
-                        <SelectTrigger className="h-9 border-b border-bricky-brick-light rounded-none text-neutral-900 cursor-pointer">
+                        <SelectTrigger className="h-9 border-b border-bricky-brick-light rounded-none text-neutral-950 cursor-pointer">
                           <SelectValue placeholder={field.value || "ÜLKE KODU"}>{field.value}</SelectValue>
                         </SelectTrigger>
-                        <SelectContent className="text-neutral-900">
+                        <SelectContent className="text-neutral-950">
                           <SelectGroup>
                             {countryPhoneCodes["tr"].map((country, index) => (
                               <SelectItem
                                 key={index}
-                                className="focus:bg-neutral-50 focus:text-neutral-900 cursor-pointer"
+                                className="focus:bg-neutral-50 focus:text-neutral-950 cursor-pointer"
                                 value={country.code}
                               >
                                 ({country.code}) {country.name}
@@ -281,11 +281,11 @@ export function ContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem className="space-y-0 pt-2">
-                <FormLabel className="text-neutral-900 font-normal pl-4 leading-none">MESAJINIZ</FormLabel>
+                <FormLabel className="text-neutral-950 font-normal pl-4 leading-none block -mb-7">MESAJINIZ</FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    className={`${commonInputStyles} min-h-[140px] border-none p-4 pt-0 rounded-md border border-bricky-brick-light`}
+                    className={`${commonInputStyles} min-h-[140px] p-4 pt-8 rounded-md border border-bricky-brick-light`}
                   />
                 </FormControl>
                 <FormMessage />
@@ -307,7 +307,7 @@ export function ContactForm() {
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormLabel className="text-neutral-900 font-light leading-snug cursor-pointer max-w-[90%]">
+                  <FormLabel className="text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
                     Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin Aydınlatma Metni&apos;ni
                     okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin Açık Rıza Metni&apos;ni
                     okudum, kabul ediyorum.
