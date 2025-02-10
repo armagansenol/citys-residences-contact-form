@@ -27,10 +27,6 @@ export function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
       buttonTL.current = gsap.timeline({
         paused: true,
         reversed: true,
-        defaults: {
-          duration: 0.8,
-          reverseSpeed: 2.5,
-        },
       })
 
       const ease = "expo.inOut"
