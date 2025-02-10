@@ -14,23 +14,23 @@
         "form": {
             "inputs": {
                 "name": {
-                    "placeholder": "AD*",
+                    "placeholder": "ADINIZ*",
                     "error": "Ad alanı zorunludur"
                 },
                 "surname": {
-                    "placeholder": "SOYAD*",
+                    "placeholder": "SOYADINIZ*",
                     "error": "Soyad alanı zorunludur"
                 },
                 "phone": {
-                    "placeholder": "TELEFON NUMARASI*",
+                    "placeholder": "TELEFON NUMARANIZ*",
                     "error": "Telefon numarası zorunludur"
                 },
                 "email": {
-                    "placeholder": "EPOSTA ADRESİ*",
-                    "error": "Lütfen geçerli bir e-posta adresi giriniz"
+                    "placeholder": "EPOSTA ADRESİNİZ*",
+                    "error": "Lütfen geçerli bir eposta adresi giriniz"
                 },
                 "residenceType": {
-                    "placeholder": "TERCİH EDİLEN KONUT TİPİ*",
+                    "placeholder": "TERCİH EDİLEN KONUT TÜRÜ*",
                     "error": "Lütfen bir rezidans tipi seçiniz"
                 },
                 "howDidYouHearAboutUs": {
@@ -38,7 +38,7 @@
                     "error": "Lütfen seçim yapınız"
                 },
                 "message": {
-                    "placeholder": "MESAJ"
+                    "placeholder": "MESAJINIZ"
                 },
                 "consent": {
                     "placeholder": "Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin Aydınlatma Metni'ni okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin Açık Rıza Metni'ni okudum, kabul ediyorum.",
