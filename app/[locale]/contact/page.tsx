@@ -52,8 +52,8 @@ export default function Contact() {
   return (
     <div className="flex flex-col-reverse lg:flex-col xl:grid grid-cols-2">
       <div className="col-span-1 h-screen flex flex-col">
-        <div className="py-4 xl:py-5 px-4 lg:px-12 pb-0 pt-0 xl:pt-4 relative xl:fixed top-0 left-0 w-full xl:w-1/2 bg-white z-10">
-          <div className="flex items-center justify-between xl:border-b border-bricky-brick-light py-4">
+        <div className="px-4 lg:px-12 relative xl:fixed top-0 left-0 w-full xl:w-1/2 bg-white z-10">
+          <div className="flex items-center justify-between xl:border-b border-bricky-brick-light py-4 xl:py-6">
             <div className="w-48 md:w-64">
               <LogoHorizontal />
             </div>
