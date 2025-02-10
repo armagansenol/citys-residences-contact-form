@@ -2,37 +2,57 @@
     "metadata": {
         "default": {
             "title": "City's Residences",
-            "description": "Mustafa V. Koç Golf Sahası, titizlikle tasarlanmış fairway’leri ve yemyeşil manzaraları bir araya getirerek golf tutkunları için eşsiz bir deneyim sunuyor."
-        },
-        "about": {
-            "title": "Hakkımızda | City's Residences",
-            "description": "Mustafa V. Koç Golf Sahası, titizlikle tasarlanmış fairway’leri ve yemyeşil manzaraları bir araya getirerek golf tutkunları için eşsiz bir deneyim sunuyor."
-        },
-        "gallery": {
-            "title": "Galeri | City's Residences",
-            "description": "Mustafa V. Koç Golf Sahası, titizlikle tasarlanmış fairway’leri ve yemyeşil manzaraları bir araya getirerek golf tutkunları için eşsiz bir deneyim sunuyor."
+            "description": "The City's Residences offers a unique experience for golf enthusiasts by combining meticulously designed fairways with lush green landscapes."
         }
     },
     "localeSwitcher": {
         "label": "tr",
         "locale": "{locale, select, tr}"
     },
-    "routes": {
-        "about": "HAKKIMIZDA",
-        "gallery": "GALERİ",
-        "contact": "İLETİŞİM"
-    },
-    "footer": {
-        "address": "Golf Sahası",
-        "copyright": "© Mustafa V. Koç Golf Sahası 2024"
-    },
-    "cursor": {
-        "view": "Videoyu İzleyin"
-    },
-    "facilities": {
-        "title": "TESİSLER"
-    },
-    "gallery": {
-        "title": "GALERİ"
+    "contact": {
+        "description": "Lütfen iletişim bilgilerinizi giriniz. Satış ekibimiz kısa süre içinde sizinle iletişime geçecektir.",
+        "form": {
+            "inputs": {
+                "name": {
+                    "placeholder": "AD*",
+                    "error": "Ad alanı zorunludur"
+                },
+                "surname": {
+                    "placeholder": "SOYAD*",
+                    "error": "Soyad alanı zorunludur"
+                },
+                "phone": {
+                    "placeholder": "TELEFON NUMARASI*",
+                    "error": "Telefon numarası zorunludur"
+                },
+                "email": {
+                    "placeholder": "EPOSTA ADRESİ*",
+                    "error": "Lütfen geçerli bir e-posta adresi giriniz"
+                },
+                "residenceType": {
+                    "placeholder": "TERCİH EDİLEN KONUT TİPİ*",
+                    "error": "Lütfen bir rezidans tipi seçiniz"
+                },
+                "howDidYouHearAboutUs": {
+                    "placeholder": "BİZİ NEREDEN DUYDUNUZ*",
+                    "error": "Lütfen seçim yapınız"
+                },
+                "message": {
+                    "placeholder": "MESAJ"
+                },
+                "consent": {
+                    "placeholder": "Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin Aydınlatma Metni' ni okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin Açık Rıza Metni' ni okudum, kabul ediyorum.",
+                    "error": "Lütfen şartları kabul ediniz"
+                }
+            },
+            "submit": {
+                "default": "GÖNDER",
+                "sending": "GÖNDERİLİYOR..."
+            },
+            "messages": {
+                "error": "Form gönderilirken hata oluştu",
+                "success": "Form başarıyla gönderildi"
+            }
+        }
     }
 }

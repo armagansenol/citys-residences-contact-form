@@ -213,3 +213,24 @@ export interface ContactInfo {
   email: string
   instagram: string
 }
+
+export interface FormTranslations {
+  inputs: {
+    name: { placeholder: string; error: string }
+    surname: { placeholder: string; error: string }
+    phone: { placeholder: string; error: string }
+    email: { placeholder: string; error: string }
+    residenceType: { placeholder: string; error: string }
+    howDidYouHearAboutUs: { placeholder: string; error: string }
+    consent: { placeholder: string; error: string }
+    message: { placeholder: string }
+  }
+  submit: {
+    default: string
+    sending: string
+  }
+  messages: {
+    error: string
+    success: string
+  }
+}

@@ -7,42 +7,39 @@ import { useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { AnimatedButton } from "@/components/animated-button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { countryPhoneCodes } from "@/lib/constants"
-import AnimatedButton from "../animated-button"
+import { FormTranslations } from "@/types"
+import { useLocale } from "next-intl"
 
-// interface FormContactProps {
-//   translations: FormTranslations
-// }
-
-const getFormSchema = () =>
-  // translations: FormTranslations
+const getFormSchema = (translations: FormTranslations) =>
   z.object({
-    name: z.string().min(1, { message: "Name is required" }),
-    surname: z.string().min(1, { message: "Surname is required" }),
+    name: z.string().min(1, { message: translations.inputs.name.error }),
+    surname: z.string().min(1, { message: translations.inputs.surname.error }),
     countryCode: z.string().min(1, { message: "Country code is required" }),
     phone: z
       .string()
-      .min(1, { message: "Phone is required" })
-      .regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid phone number" })
-      .refine((val) => /^\+?[0-9]+$/.test(val), { message: "Phone number must contain only numbers" }),
-    email: z.string().email({ message: "Email is required" }),
+      .min(1, { message: translations.inputs.phone.error })
+      .regex(/^\+?[1-9]\d{1,14}$/, { message: translations.inputs.phone.error })
+      .refine((val) => /^\+?[0-9]+$/.test(val), { message: translations.inputs.phone.error }),
+    email: z.string().email({ message: translations.inputs.email.error }),
     residenceType: z
       .enum(["x", "y", "z"], {
-        required_error: "Residence type is required",
+        required_error: translations.inputs.residenceType.error,
       })
       .nullable(),
     howDidYouHearAboutUs: z
       .enum(["x", "y", "z"], {
-        required_error: "How did you hear about us is required",
+        required_error: translations.inputs.howDidYouHearAboutUs.error,
       })
       .nullable(),
-    message: z.string().min(1, { message: "Message is required" }),
-    consent: z.boolean().refine((data) => data === true, { message: "Consent is required" }),
+    message: z.string(),
+    consent: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.error }),
   })
 
 type FormValues = z.infer<ReturnType<typeof getFormSchema>>
@@ -133,12 +130,15 @@ const FormSelect = ({
   />
 )
 
-export function ContactForm() {
-  // { translations }: FormContactProps
+interface FormContactProps {
+  translations: FormTranslations
+}
+
+export function ContactForm({ translations }: FormContactProps) {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(getFormSchema()),
+    resolver: zodResolver(getFormSchema(translations)),
     defaultValues: {
       name: "",
       surname: "",
@@ -152,15 +152,40 @@ export function ContactForm() {
     },
   })
 
+  const locale = useLocale()
+
+  // Generic function to get any UTM parameter
+  const getUtmParameter = (param: string) => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search)
+      return urlParams.get(param) || ""
+    }
+    return ""
+  }
+
   const mutation = useMutation({
     mutationFn: async (data: FormValues) => {
       try {
-        const response = await fetch("/api/contact", {
+        const formData = new FormData()
+        // Convert all form values to FormData
+        Object.entries(data).forEach(([key, value]) => {
+          formData.append(key, value?.toString() ?? "")
+        })
+
+        // Add current language to formData
+        formData.append("language", locale)
+
+        // Add UTM parameters to formData
+        formData.append("utm_source", getUtmParameter("utm_source"))
+        formData.append("utm_medium", getUtmParameter("utm_medium"))
+        formData.append("utm_campaign", getUtmParameter("utm_campaign"))
+
+        // Add complete URL to formData
+        formData.append("url", window.location.href)
+
+        const response = await fetch("https://crm.citysresidences.com/api/lead.php", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
+          body: formData,
         })
 
         const result = await response.json()
@@ -179,7 +204,6 @@ export function ContactForm() {
     },
     onSuccess: () => {
       form.reset()
-
       form.clearErrors()
 
       // Clear success message after 5 seconds
@@ -203,12 +227,12 @@ export function ContactForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="font-halenoir space-y-4 lg:space-y-8">
         <div className="flex flex-col lg:grid grid-flow-col gap-4 md:grid-cols-2">
-          <FormInput control={form.control} name="name" placeholder={"ADINIZ*"} />
-          <FormInput control={form.control} name="surname" placeholder={"SOYADINIZ*"} />
+          <FormInput control={form.control} name="name" placeholder={translations.inputs.name.placeholder} />
+          <FormInput control={form.control} name="surname" placeholder={translations.inputs.surname.placeholder} />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="grid grid-cols-12 gap-2 items-end col-span-1">
-            <div className="col-span-3">
+          <div className="grid grid-cols-12 gap-2 items-start col-span-1">
+            <div className="col-start-1 col-end-4 row-start-1 row-end-2 z-20">
               <FormField
                 control={form.control}
                 name="countryCode"
@@ -216,7 +240,7 @@ export function ContactForm() {
                   <FormItem className="col-span-1">
                     <FormControl>
                       <Select onValueChange={field.onChange} value={field.value} defaultValue={"+90"}>
-                        <SelectTrigger className="h-9 border-b border-bricky-brick-light rounded-none text-neutral-950 cursor-pointer">
+                        <SelectTrigger className="h-9 rounded-none text-neutral-950 cursor-pointer text-base md:text-sm">
                           <SelectValue placeholder={field.value || "ÜLKE KODU"}>{field.value}</SelectValue>
                         </SelectTrigger>
                         <SelectContent className="text-neutral-950">
@@ -239,15 +263,21 @@ export function ContactForm() {
                 )}
               />
             </div>
-            <div className="col-span-9">
-              <FormInput control={form.control} name="phone" type="tel" placeholder={"TELEFON NUMARANIZ*"} />
+            <div className="col-start-1 col-end-13 row-start-1 row-end-2">
+              <FormInput
+                className="pl-24"
+                control={form.control}
+                name="phone"
+                type="tel"
+                placeholder={translations.inputs.phone.placeholder}
+              />
             </div>
           </div>
           <FormInput
             control={form.control}
             name="email"
             type="email"
-            placeholder={"EMAIL ADRESİNİZ*"}
+            placeholder={translations.inputs.email.placeholder}
             className="col-span-1 md:col-span-1"
           />
         </div>
@@ -255,23 +285,21 @@ export function ContactForm() {
           <FormSelect
             control={form.control}
             name="residenceType"
-            placeholder="TERCİH EDİLEN KONUT TÜRÜ"
+            placeholder={translations.inputs.residenceType.placeholder}
             options={[
-              { value: "apple", label: "X" },
-              { value: "banana", label: "Y" },
-              { value: "blueberry", label: "Z" },
-              { value: "grapes", label: "W" },
+              { value: "x", label: "X" },
+              { value: "y", label: "Y" },
+              { value: "z", label: "Z" },
             ]}
           />
           <FormSelect
             control={form.control}
             name="howDidYouHearAboutUs"
-            placeholder="BİZİ NEREDEN DUYDUNUZ?"
+            placeholder={translations.inputs.howDidYouHearAboutUs.placeholder}
             options={[
-              { value: "apple", label: "X" },
-              { value: "banana", label: "Y" },
-              { value: "blueberry", label: "Z" },
-              { value: "grapes", label: "W" },
+              { value: "x", label: "X" },
+              { value: "y", label: "Y" },
+              { value: "z", label: "Z" },
             ]}
           />
         </div>
@@ -281,13 +309,13 @@ export function ContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem className="space-y-0 pt-2">
-                <FormLabel className="text-neutral-950 font-normal pl-2 lg:pl-4 leading-none block -mb-8 lg:-mb-7 text-base md:text-sm">
-                  MESAJINIZ
+                <FormLabel className="text-neutral-950 font-normal pl-2 lg:pl-4 leading-none block -mb-8 lg:-mb-8 text-base md:text-sm">
+                  {translations.inputs.message.placeholder}
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    className={`${commonInputStyles} min-h-[140px] p-2 lg:p-4 pt-8 rounded-md border border-bricky-brick-light`}
+                    className={`${commonInputStyles} min-h-[140px] p-2 pt-8 lg:pt-8 rounded-md border border-bricky-brick-light resize-none`}
                   />
                 </FormControl>
                 <FormMessage />
@@ -310,9 +338,7 @@ export function ContactForm() {
                     />
                   </FormControl>
                   <FormLabel className="text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
-                    Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin Aydınlatma Metni&apos;ni
-                    okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin Açık Rıza Metni&apos;ni
-                    okudum, kabul ediyorum.
+                    {translations.inputs.consent.placeholder}
                   </FormLabel>
                 </div>
                 <FormMessage />
@@ -321,7 +347,7 @@ export function ContactForm() {
           />
         </div>
         <button type="submit" disabled={mutation.isPending} className="w-full md:w-auto">
-          <AnimatedButton text={mutation.isPending ? "GÖNDERİLİYOR..." : "GÖNDER"} />
+          <AnimatedButton text={mutation.isPending ? translations.submit.sending : translations.submit.default} />
         </button>
       </form>
       <AnimatePresence>
@@ -332,7 +358,7 @@ export function ContactForm() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             className={`flex items-center justify-center py-6 my-4 ${
-              message.type === "success" ? "text-green-400" : "text-red"
+              message.type === "success" ? "text-green-700" : "text-red-700"
             }`}
           >
             {message.text}
