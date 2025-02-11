@@ -248,14 +248,17 @@ export function ContactForm({ translations }: FormContactProps) {
     { id: "acikhava-reklamlari", label: translations.inputs.howDidYouHearAboutUs.options["acikhava-reklamlari"] },
   ]
 
+  const residenceTypeValue = form.watch("residenceType")
+  const howDidYouHearAboutUsValue = form.watch("howDidYouHearAboutUs")
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="font-halenoir space-y-4 lg:space-y-8">
-        <div className="flex flex-col lg:grid grid-flow-col gap-4 md:grid-cols-2">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="font-halenoir space-y-6 lg:space-y-8">
+        <div className="flex flex-col lg:grid grid-flow-col gap-6 lg:gap-4 md:grid-cols-2">
           <FormInput control={form.control} name="name" placeholder={translations.inputs.name.placeholder} />
           <FormInput control={form.control} name="surname" placeholder={translations.inputs.surname.placeholder} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4">
           <div className="grid grid-cols-12 gap-2 items-start col-span-1">
             <div className="col-start-1 col-end-4 row-start-1 row-end-2 z-20">
               <FormField
@@ -306,10 +309,14 @@ export function ContactForm({ translations }: FormContactProps) {
             className="col-span-1 md:col-span-1"
           />
         </div>
-        <div className="flex flex-col lg:grid grid-cols-2 gap-4">
+        <div className="flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4">
           <div>
             <DropdownMenuCheckboxes
-              triggerText={translations.inputs.residenceType.placeholder}
+              triggerText={
+                residenceTypeValue
+                  ? residenceTypeValue.split(",").join(", ")
+                  : translations.inputs.residenceType.placeholder
+              }
               options={residenceTypeOptions}
               onChange={(id, checked) => {
                 // Get current value
@@ -329,7 +336,14 @@ export function ContactForm({ translations }: FormContactProps) {
           </div>
           <div>
             <DropdownMenuCheckboxes
-              triggerText={translations.inputs.howDidYouHearAboutUs.placeholder}
+              triggerText={
+                howDidYouHearAboutUsValue
+                  ? howDidYouHearAboutUsValue
+                      .split(",")
+                      .map((id) => howDidYouHearAboutUsOptions.find((option) => option.id === id)?.label)
+                      .join(", ")
+                  : translations.inputs.howDidYouHearAboutUs.placeholder
+              }
               options={howDidYouHearAboutUsOptions}
               onChange={(id, checked) => {
                 // Get current value

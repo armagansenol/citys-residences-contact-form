@@ -48,14 +48,14 @@ export function DropdownMenuCheckboxes({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="h-11 w-full border border-bricky-brick-light flex items-center justify-between px-4 rounded-md text-base md:text-sm outline-none focus:outline-none focus:ring-0"
+          className="h-11 w-full border border-bricky-brick-light flex items-center justify-between px-2 lg:px-4 rounded-md text-base md:text-sm outline-none focus:outline-none focus:ring-0"
           type="button"
         >
-          {triggerText}
-          <ChevronDown className="size-4" />
+          <span className="truncate">{triggerText}</span>
+          <ChevronDown className="size-4 flex-shrink-0" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className={cn(className, "w-72 border-bricky-brick-light")}>
+      <DropdownMenuContent className={cn(className, "w-80 lg:w-72 border-bricky-brick-light")}>
         {options.map((option) => (
           <DropdownMenuCheckboxItem
             className="cursor-pointer"

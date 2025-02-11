@@ -68,7 +68,7 @@ export default function Contact() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-start gap-4 lg:gap-8 px-4 lg:px-12 py-0 xl:py-8 pb-8 lg:pb-20 xl:mt-32">
+        <div className="flex flex-col justify-start gap-6 lg:gap-8 px-4 lg:px-12 py-0 xl:py-8 pb-8 lg:pb-20 xl:mt-32">
           <div className="block xl:hidden col-span-1 -mx-4 lg:-mx-12 lg:h-[500px]">{video}</div>
           <h1 className="text-neutral-900 text-lg md:text-xl font-normal font-halenoir max-w-xl">{t("description")}</h1>
           <div className="lg:pr-48 xl:pr-0 pb-12 lg:pb-0">
