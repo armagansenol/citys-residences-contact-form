@@ -142,6 +142,7 @@ export function ContactForm({ translations }: FormContactProps) {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const lenis = useLenis()
   const t = useTranslations()
+  const locale = useLocale()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(getFormSchema(translations)),
@@ -157,8 +158,6 @@ export function ContactForm({ translations }: FormContactProps) {
       consent: false,
     },
   })
-
-  const locale = useLocale()
 
   // Generic function to get any UTM parameter
   const getUtmParameter = (param: string) => {
@@ -271,13 +270,13 @@ export function ContactForm({ translations }: FormContactProps) {
                         </SelectTrigger>
                         <SelectContent className="text-neutral-950">
                           <SelectGroup>
-                            {countryPhoneCodes["tr"].map((country, index) => (
+                            {countryPhoneCodes[locale as keyof typeof countryPhoneCodes].map((country, index) => (
                               <SelectItem
                                 key={index}
                                 className="focus:bg-neutral-50 focus:text-neutral-950 cursor-pointer"
                                 value={country.code}
                               >
-                                ({country.code}) {country.name}
+                                {country.name} ({country.code})
                               </SelectItem>
                             ))}
                           </SelectGroup>
