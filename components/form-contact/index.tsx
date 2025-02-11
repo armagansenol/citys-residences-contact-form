@@ -5,12 +5,13 @@ import { useMutation } from "@tanstack/react-query"
 import { useLenis } from "lenis/react"
 import { AnimatePresence, motion } from "motion/react"
 import { useLocale, useTranslations } from "next-intl"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { AnimatedButton } from "@/components/animated-button"
-import { DropdownMenuCheckboxes } from "@/components/dropdown-menu"
+import { DropdownMenuCheckboxes, DropdownMenuCheckboxesRef } from "@/components/dropdown-menu"
+import { IconLoading } from "@/components/icons"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -18,7 +19,6 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Textarea } from "@/components/ui/textarea"
 import { countryPhoneCodes } from "@/lib/constants"
 import { FormTranslations } from "@/types"
-import { IconLoading } from "../icons"
 
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
@@ -144,6 +144,14 @@ export function ContactForm({ translations }: FormContactProps) {
   const t = useTranslations()
   const locale = useLocale()
 
+  const residenceTypeDropdownRef = useRef<DropdownMenuCheckboxesRef>(null)
+  const howDidYouHearAboutUsDropdownRef = useRef<DropdownMenuCheckboxesRef>(null)
+
+  const resetDropdowns = () => {
+    residenceTypeDropdownRef.current?.reset()
+    howDidYouHearAboutUsDropdownRef.current?.reset()
+  }
+
   const form = useForm<FormValues>({
     resolver: zodResolver(getFormSchema(translations)),
     defaultValues: {
@@ -210,7 +218,7 @@ export function ContactForm({ translations }: FormContactProps) {
     onSuccess: () => {
       form.reset()
       form.clearErrors()
-
+      resetDropdowns()
       // Clear success message after 5 seconds
       setTimeout(() => {
         setMessage(null)
@@ -331,6 +339,7 @@ export function ContactForm({ translations }: FormContactProps) {
                 // Join back to comma-separated string and update form
                 form.setValue("residenceType", newIds.join(","))
               }}
+              ref={residenceTypeDropdownRef}
             />
             <FormErrorMessage message={form.formState.errors.residenceType?.message} />
           </div>
@@ -358,6 +367,7 @@ export function ContactForm({ translations }: FormContactProps) {
                 // Join back to comma-separated string and update form
                 form.setValue("howDidYouHearAboutUs", newIds.join(","))
               }}
+              ref={howDidYouHearAboutUsDropdownRef}
             />
             <FormErrorMessage message={form.formState.errors.howDidYouHearAboutUs?.message} />
           </div>
