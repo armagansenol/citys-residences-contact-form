@@ -21,6 +21,12 @@ export default function Contact() {
       howDidYouHearAboutUs: {
         placeholder: t("form.inputs.howDidYouHearAboutUs.placeholder"),
         error: t("form.inputs.howDidYouHearAboutUs.error"),
+        options: {
+          "arkadas-tavsiyesi": t("form.inputs.howDidYouHearAboutUs.options.arkadas-tavsiyesi"),
+          internet: t("form.inputs.howDidYouHearAboutUs.options.internet"),
+          "sosyal-medya": t("form.inputs.howDidYouHearAboutUs.options.sosyal-medya"),
+          "acikhava-reklamlari": t("form.inputs.howDidYouHearAboutUs.options.acikhava-reklamlari"),
+        },
       },
       message: { placeholder: t("form.inputs.message.placeholder") },
       consent: {

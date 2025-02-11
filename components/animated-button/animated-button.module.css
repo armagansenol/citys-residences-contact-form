@@ -29,7 +29,7 @@
 
   .text {
     font-family: var(--font-halenoir);
-    font-size: mobile-vw(15px);
+    font-size: mobile-vw(16px);
     font-weight: 500;
     line-height: 1;
     padding-top: 2px;
@@ -49,12 +49,17 @@
     width: calc(var(--height) - var(--padding) * 2);
 
     .icon {
-      height: desktop-vw(15px);
-      width: desktop-vw(15px);
+      height: mobile-vw(20px);
+      width: mobile-vw(20px);
 
-      @include-media ('mobile') {
-        height: mobile-vw(12px);
-        width: mobile-vw(12px);
+      @include-media ('tablet') {
+        height: desktop-vw(20px);
+        width: desktop-vw(20px);
+      }
+
+      @include-media ('desktop') {
+        height: desktop-vw(15px);
+        width: desktop-vw(15px);
       }
     }
   }

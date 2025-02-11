@@ -35,13 +35,19 @@
                 },
                 "howDidYouHearAboutUs": {
                     "placeholder": "HOW DID YOU HEAR ABOUT US?*",
-                    "error": "Please select"
+                    "error": "Please select",
+                    "options": {
+                        "arkadas-tavsiyesi": "Friend Recommendation",
+                        "internet": "Internet",
+                        "sosyal-medya": "Social Media",
+                        "acikhava-reklamlari": "Public Media"
+                    }
                 },
                 "message": {
                     "placeholder": "MESSAGE"
                 },
                 "consent": {
-                    "placeholder": "I have read the Clarification Text regarding the personal data I will share within the scope of the Contact Us application, and I have read and accept the Explicit Consent Text regarding the personal data I will share within the scope of the clarification text.",
+                    "placeholder": "I have read the <Clarification>Clarification Text</Clarification> regarding the personal data I will share within the scope of the Contact Us application, and I have read and accept the <ExplicitConsent>Explicit Consent Text</ExplicitConsent> regarding the personal data I will share within the scope of the clarification text.",
                     "error": "Please accept the terms and conditions"
                 }
             },

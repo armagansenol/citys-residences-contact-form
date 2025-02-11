@@ -221,7 +221,7 @@ export interface FormTranslations {
     phone: { placeholder: string; error: string }
     email: { placeholder: string; error: string }
     residenceType: { placeholder: string; error: string }
-    howDidYouHearAboutUs: { placeholder: string; error: string }
+    howDidYouHearAboutUs: { placeholder: string; error: string; options: Record<string, string> }
     consent: { placeholder: string; error: string }
     message: { placeholder: string }
   }

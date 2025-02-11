@@ -35,13 +35,19 @@
                 },
                 "howDidYouHearAboutUs": {
                     "placeholder": "BİZİ NEREDEN DUYDUNUZ*",
-                    "error": "Lütfen seçim yapınız"
+                    "error": "Lütfen seçim yapınız",
+                    "options": {
+                        "arkadas-tavsiyesi": "Arkadaş Tavsiyesi",
+                        "internet": "İnternet",
+                        "sosyal-medya": "Sosyal Medya",
+                        "acikhava-reklamlari": "Açıkhava Reklamları"
+                    }
                 },
                 "message": {
                     "placeholder": "MESAJINIZ"
                 },
                 "consent": {
-                    "placeholder": "Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin Aydınlatma Metni'ni okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin Açık Rıza Metni'ni okudum, kabul ediyorum.",
+                    "placeholder": "Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin <Clarification>Aydınlatma Metni</Clarification>'ni okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin <ExplicitConsent>Açık Rıza Metni</ExplicitConsent>'ni okudum, kabul ediyorum.",
                     "error": "Lütfen şartları kabul ediniz"
                 }
             },

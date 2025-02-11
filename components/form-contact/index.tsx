@@ -2,12 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
+import { useLenis } from "lenis/react"
 import { AnimatePresence, motion } from "motion/react"
+import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { AnimatedButton } from "@/components/animated-button"
+import { DropdownMenuCheckboxes } from "@/components/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -15,8 +18,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Textarea } from "@/components/ui/textarea"
 import { countryPhoneCodes } from "@/lib/constants"
 import { FormTranslations } from "@/types"
-import { useLenis } from "lenis/react"
-import { useLocale } from "next-intl"
+import { IconLoading } from "../icons"
 
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
@@ -81,47 +83,56 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
   />
 )
 
-const FormSelect = ({
-  name,
-  control,
-  placeholder,
-  options,
-}: {
-  name: keyof FormValues
-  control: Control<FormValues>
-  placeholder: string
-  options: { value: string; label: string }[]
-}) => (
-  <FormField
-    control={control}
-    name={name}
-    render={({ field }) => (
-      <FormItem>
-        <FormControl>
-          <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
-            <SelectTrigger className="h-11 text-base md:text-sm border border-bricky-brick-light rounded-md text-neutral-950 cursor-pointer px-2 lg:px-4">
-              <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent className="text-neutral-950">
-              <SelectGroup>
-                {options.map((option) => (
-                  <SelectItem
-                    key={option.value}
-                    className="focus:bg-neutral-50 focus:text-neutral-950 cursor-pointer"
-                    value={option.value}
-                  >
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
-)
+// const FormSelect = ({
+//   name,
+//   control,
+//   placeholder,
+//   options,
+// }: {
+//   name: keyof FormValues
+//   control: Control<FormValues>
+//   placeholder: string
+//   options: { value: string; label: string }[]
+// }) => (
+//   <FormField
+//     control={control}
+//     name={name}
+//     render={({ field }) => (
+//       <FormItem>
+//         <FormControl>
+//           <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
+//             <SelectTrigger className="h-11 text-base md:text-sm border border-bricky-brick-light rounded-md text-neutral-950 cursor-pointer px-2 lg:px-4">
+//               <SelectValue placeholder={placeholder} />
+//             </SelectTrigger>
+//             <SelectContent className="text-neutral-950">
+//               <SelectGroup>
+//                 {options.map((option) => (
+//                   <SelectItem
+//                     key={option.value}
+//                     className="focus:bg-neutral-50 focus:text-neutral-950 cursor-pointer"
+//                     value={option.value}
+//                   >
+//                     {option.label}
+//                   </SelectItem>
+//                 ))}
+//               </SelectGroup>
+//             </SelectContent>
+//           </Select>
+//         </FormControl>
+//         <FormMessage />
+//       </FormItem>
+//     )}
+//   />
+// )
+
+interface FormErrorMessageProps {
+  message?: string
+}
+
+const FormErrorMessage = ({ message }: FormErrorMessageProps) => {
+  if (!message) return null
+  return <span className="font-halenoir text-red-500 text-[0.8rem] mt-2 font-medium">{message}</span>
+}
 
 interface FormContactProps {
   translations: FormTranslations
@@ -130,6 +141,7 @@ interface FormContactProps {
 export function ContactForm({ translations }: FormContactProps) {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const lenis = useLenis()
+  const t = useTranslations()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(getFormSchema(translations)),
@@ -221,6 +233,22 @@ export function ContactForm({ translations }: FormContactProps) {
     lenis?.resize()
   }, [form.formState, lenis])
 
+  const residenceTypeOptions = [
+    { id: "1+1", label: "1+1" },
+    { id: "2+1", label: "2+1" },
+    { id: "3+1", label: "3+1" },
+    { id: "4+1", label: "4+1" },
+    { id: "5+1", label: "5+1" },
+    { id: "6+1", label: "6+1" },
+  ]
+
+  const howDidYouHearAboutUsOptions = [
+    { id: "arkadas-tavsiyesi", label: translations.inputs.howDidYouHearAboutUs.options["arkadas-tavsiyesi"] },
+    { id: "internet", label: translations.inputs.howDidYouHearAboutUs.options.internet },
+    { id: "sosyal-medya", label: translations.inputs.howDidYouHearAboutUs.options["sosyal-medya"] },
+    { id: "acikhava-reklamlari", label: translations.inputs.howDidYouHearAboutUs.options["acikhava-reklamlari"] },
+  ]
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="font-halenoir space-y-4 lg:space-y-8">
@@ -280,26 +308,46 @@ export function ContactForm({ translations }: FormContactProps) {
           />
         </div>
         <div className="flex flex-col lg:grid grid-cols-2 gap-4">
-          <FormSelect
-            control={form.control}
-            name="residenceType"
-            placeholder={translations.inputs.residenceType.placeholder}
-            options={[
-              { value: "x", label: "X" },
-              { value: "y", label: "Y" },
-              { value: "z", label: "Z" },
-            ]}
-          />
-          <FormSelect
-            control={form.control}
-            name="howDidYouHearAboutUs"
-            placeholder={translations.inputs.howDidYouHearAboutUs.placeholder}
-            options={[
-              { value: "x", label: "X" },
-              { value: "y", label: "Y" },
-              { value: "z", label: "Z" },
-            ]}
-          />
+          <div>
+            <DropdownMenuCheckboxes
+              triggerText={translations.inputs.residenceType.placeholder}
+              options={residenceTypeOptions}
+              onChange={(id, checked) => {
+                // Get current value
+                const currentValue = form.getValues("residenceType") || ""
+
+                // Convert to array of IDs
+                const currentIds = currentValue ? currentValue.split(",") : []
+
+                // Add or remove the ID based on checked state
+                const newIds = checked ? [...currentIds, id].filter(Boolean) : currentIds.filter((val) => val !== id)
+
+                // Join back to comma-separated string and update form
+                form.setValue("residenceType", newIds.join(","))
+              }}
+            />
+            <FormErrorMessage message={form.formState.errors.residenceType?.message} />
+          </div>
+          <div>
+            <DropdownMenuCheckboxes
+              triggerText={translations.inputs.howDidYouHearAboutUs.placeholder}
+              options={howDidYouHearAboutUsOptions}
+              onChange={(id, checked) => {
+                // Get current value
+                const currentValue = form.getValues("howDidYouHearAboutUs") || ""
+
+                // Convert to array of IDs
+                const currentIds = currentValue ? currentValue.split(",") : []
+
+                // Add or remove the ID based on checked state
+                const newIds = checked ? [...currentIds, id].filter(Boolean) : currentIds.filter((val) => val !== id)
+
+                // Join back to comma-separated string and update form
+                form.setValue("howDidYouHearAboutUs", newIds.join(","))
+              }}
+            />
+            <FormErrorMessage message={form.formState.errors.howDidYouHearAboutUs?.message} />
+          </div>
         </div>
         <div className="grid grid-flow-col">
           <FormField
@@ -336,7 +384,28 @@ export function ContactForm({ translations }: FormContactProps) {
                     />
                   </FormControl>
                   <FormLabel className="text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
-                    {translations.inputs.consent.placeholder}
+                    {t.rich("contact.form.inputs.consent.placeholder", {
+                      Clarification: (chunks) => (
+                        <a
+                          target="_blank"
+                          rel="norefferer noopener"
+                          href="/pdf/kvkk-aydinlatma-metni.pdf"
+                          className="text-neutral-950 underline"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                      ExplicitConsent: (chunks) => (
+                        <a
+                          target="_blank"
+                          rel="norefferer noopener"
+                          href="/pdf/acik-riza-metni.pdf"
+                          className="text-neutral-950 underline"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
                   </FormLabel>
                 </div>
                 <FormMessage />
@@ -344,8 +413,13 @@ export function ContactForm({ translations }: FormContactProps) {
             )}
           />
         </div>
-        <button type="submit" disabled={mutation.isPending} className="w-full md:w-auto">
-          <AnimatedButton text={mutation.isPending ? translations.submit.sending : translations.submit.default} />
+        <button type="submit" disabled={mutation.isPending} className="flex relative">
+          <AnimatedButton text={translations.submit.default} />
+          {mutation.isPending && (
+            <span className="absolute top-1/2 -right-4 -translate-y-1/2 translate-x-full flex items-center justify-center w-6 h-6">
+              <IconLoading fill="var(--bricky-brick)" />
+            </span>
+          )}
         </button>
       </form>
       <AnimatePresence>
