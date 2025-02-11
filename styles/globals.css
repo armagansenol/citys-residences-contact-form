@@ -31,8 +31,8 @@ body {
 }
 
 *::selection {
-  background-color: var(--theme-secondary);
-  color: var(--theme-primary);
+  background-color: var(--bricky-brick);
+  color: var(--white);
 }
 
 .gsap-marker-end,
