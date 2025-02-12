@@ -104,7 +104,7 @@ interface CountrySelectOptionProps extends RPNInput.FlagProps {
   onChange: (country: RPNInput.Country) => void
 }
 
-const CountrySelectOption = ({ country, countryName, selectedCountry, onChange }: CountrySelectOptionProps) => {
+const CountrySelectOption = ({ country, countryName, onChange }: CountrySelectOptionProps) => {
   return (
     <CommandItem className="gap-2" onSelect={() => onChange(country)}>
       {/* <FlagComponent country={country} countryName={countryName} /> */}
