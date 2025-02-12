@@ -65,8 +65,11 @@ export const DropdownMenuCheckboxesResidences = forwardRef<DropdownMenuCheckboxe
               {selectedItems && selectedItems?.length > 0 ? (
                 <span className="w-full relative overflow-hidden gradient-white-to-transparent">
                   <span className="flex gap-1">
-                    {selectedItems?.map((item) => (
-                      <span className="bg-bricky-brick px-2 py-0.5 rounded-sm text-white tracking-widest whitespace-nowrap">
+                    {selectedItems?.map((item, index) => (
+                      <span
+                        key={index}
+                        className="bg-bricky-brick px-2 py-0.5 rounded-sm text-white tracking-widest whitespace-nowrap"
+                      >
                         {item}
                       </span>
                     ))}
