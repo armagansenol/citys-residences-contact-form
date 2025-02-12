@@ -14,41 +14,71 @@
         "form": {
             "inputs": {
                 "name": {
-                    "placeholder": "ADINIZ*",
-                    "error": "Ad alanı zorunludur"
+                    "placeholder": "Adınız*",
+                    "errors": {
+                        "required": "Zorunlu alan"
+                    }
                 },
                 "surname": {
-                    "placeholder": "SOYADINIZ*",
-                    "error": "Soyad alanı zorunludur"
+                    "placeholder": "Soyadınız*",
+                    "errors": {
+                        "required": "Zorunlu alan"
+                    }
                 },
                 "phone": {
-                    "placeholder": "TELEFON NUMARANIZ*",
-                    "error": "Telefon numarası zorunludur"
+                    "placeholder": "Telefon Numaranız*",
+                    "errors": {
+                        "required": "Zorunlu alan",
+                        "min": "Telefon numarası en az 8 karakter olmalıdır",
+                        "max": "Telefon numarası en fazla 15 karakter olmalıdır"
+                    }
                 },
                 "email": {
-                    "placeholder": "EPOSTA ADRESİNİZ*",
-                    "error": "Lütfen geçerli bir eposta adresi giriniz"
+                    "placeholder": "E-Posta Adresiniz*",
+                    "errors": {
+                        "required": "Zorunlu alan",
+                        "email": "Lütfen geçerli bir e-posta adresi giriniz"
+                    }
                 },
                 "residenceType": {
-                    "placeholder": "TERCİH EDİLEN KONUT TÜRÜ*",
-                    "error": "Lütfen bir rezidans tipi seçiniz"
+                    "placeholder": "Tercih Edilen Konut Türü*",
+                    "errors": {
+                        "required": "Zorunlu alan"
+                    }
                 },
                 "howDidYouHearAboutUs": {
-                    "placeholder": "BİZİ NEREDEN DUYDUNUZ*",
-                    "error": "Lütfen seçim yapınız",
+                    "placeholder": "Bizi nereden duydunuz?*",
+                    "errors": {
+                        "required": "Zorunlu alan"
+                    },
                     "options": {
-                        "arkadas-tavsiyesi": "Arkadaş Tavsiyesi",
-                        "internet": "İnternet",
-                        "sosyal-medya": "Sosyal Medya",
-                        "acikhava-reklamlari": "Açıkhava Reklamları"
+                        "reference": "Referans",
+                        "projectVisit": "Avm / Proje Alanı Ziyaret",
+                        "internetSocialMedia": "İnternet / Sosyal Medya",
+                        "billboard": "Billboard",
+                        "newspaperMagazine": "Gazete / Dergi"
                     }
                 },
                 "message": {
-                    "placeholder": "MESAJINIZ"
+                    "placeholder": "Mesajınız"
                 },
                 "consent": {
                     "placeholder": "Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin <Clarification>Aydınlatma Metni</Clarification>'ni okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin <ExplicitConsent>Açık Rıza Metni</ExplicitConsent>'ni okudum, kabul ediyorum.",
-                    "error": "Lütfen şartları kabul ediniz"
+                    "errors": {
+                        "required": "Zorunlu alan"
+                    }
+                },
+                "consentElectronicMessage": {
+                    "placeholder": "Tarafıma ticari elektronik ileti gönderilmesine açık rızam var"
+                },
+                "consentSms": {
+                    "placeholder": "Sms"
+                },
+                "consentEmail": {
+                    "placeholder": "Email"
+                },
+                "consentPhone": {
+                    "placeholder": "Phone"
                 }
             },
             "submit": {

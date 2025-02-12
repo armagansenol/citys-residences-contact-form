@@ -56,3 +56,17 @@ body {
     --radius: 0.5rem;
   }
 }
+
+.gradient-white-to-transparent {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(to left, var(--white) 30%, transparent);
+  }
+}

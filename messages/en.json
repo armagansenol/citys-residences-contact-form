@@ -14,41 +14,71 @@
         "form": {
             "inputs": {
                 "name": {
-                    "placeholder": "NAME*",
-                    "error": "Name is required"
+                    "placeholder": "Name*",
+                    "errors": {
+                        "required": "Required field"
+                    }
                 },
                 "surname": {
-                    "placeholder": "SURNAME*",
-                    "error": "Surname is required"
+                    "placeholder": "Surname*",
+                    "errors": {
+                        "required": "Required field"
+                    }
                 },
                 "phone": {
-                    "placeholder": "PHONE NUMBER*",
-                    "error": "Phone number is required"
+                    "placeholder": "Phone Number*",
+                    "errors": {
+                        "required": "Required field",
+                        "min": "Phone number must be at least 8 characters long",
+                        "max": "Phone number must be at most 15 characters long"
+                    }
                 },
                 "email": {
-                    "placeholder": "EMAIL ADDRESS*",
-                    "error": "Please enter a valid email address"
+                    "placeholder": "Email Address*",
+                    "errors": {
+                        "required": "Required field",
+                        "email": "Please enter a valid email address"
+                    }
                 },
                 "residenceType": {
-                    "placeholder": "PREFERRED RESIDENCE TYPE*",
-                    "error": "Please select a residence type"
+                    "placeholder": "Preferred Residence Type*",
+                    "errors": {
+                        "required": "Required field"
+                    }
                 },
                 "howDidYouHearAboutUs": {
-                    "placeholder": "HOW DID YOU HEAR ABOUT US?*",
-                    "error": "Please select",
+                    "placeholder": "How did you hear about us?*",
+                    "errors": {
+                        "required": "Required field"
+                    },
                     "options": {
-                        "arkadas-tavsiyesi": "Friend Recommendation",
-                        "internet": "Internet",
-                        "sosyal-medya": "Social Media",
-                        "acikhava-reklamlari": "Public Media"
+                        "reference": "Reference",
+                        "projectVisit": "Shopping Mall / Project Area Visit",
+                        "internetSocialMedia": "Internet / Social Media",
+                        "billboard": "Billboard",
+                        "newspaperMagazine": "Newspaper / Magazine"
                     }
                 },
                 "message": {
-                    "placeholder": "MESSAGE"
+                    "placeholder": "Message"
                 },
                 "consent": {
                     "placeholder": "I have read the <Clarification>Clarification Text</Clarification> regarding the personal data I will share within the scope of the Contact Us application, and I have read and accept the <ExplicitConsent>Explicit Consent Text</ExplicitConsent> regarding the personal data I will share within the scope of the clarification text.",
-                    "error": "Please accept the terms and conditions"
+                    "errors": {
+                        "required": "Required field"
+                    }
+                },
+                "consentElectronicMessage": {
+                    "placeholder": "I consent to receiving commercial electronic messages"
+                },
+                "consentSms": {
+                    "placeholder": "SMS"
+                },
+                "consentEmail": {
+                    "placeholder": "Email"
+                },
+                "consentPhone": {
+                    "placeholder": "Phone"
                 }
             },
             "submit": {

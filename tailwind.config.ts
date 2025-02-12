@@ -100,7 +100,7 @@ const config: Config = {
         "col-end-24": "col-end 24",
       },
       colors: {
-        "bricky-brick-light": "rgba(183, 61, 37, 0.15)",
+        "bricky-brick-light": "rgba(183, 61, 37, 0.25)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

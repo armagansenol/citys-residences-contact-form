@@ -10,28 +10,54 @@ export default function Contact() {
 
   const formTranslations: FormTranslations = {
     inputs: {
-      name: { placeholder: t("form.inputs.name.placeholder"), error: t("form.inputs.name.error") },
-      surname: { placeholder: t("form.inputs.surname.placeholder"), error: t("form.inputs.surname.error") },
-      phone: { placeholder: t("form.inputs.phone.placeholder"), error: t("form.inputs.phone.error") },
-      email: { placeholder: t("form.inputs.email.placeholder"), error: t("form.inputs.email.error") },
+      name: {
+        placeholder: t("form.inputs.name.placeholder"),
+        errors: { required: t("form.inputs.name.errors.required") },
+      },
+      surname: {
+        placeholder: t("form.inputs.surname.placeholder"),
+        errors: { required: t("form.inputs.surname.errors.required") },
+      },
+      phone: {
+        placeholder: t("form.inputs.phone.placeholder"),
+        errors: {
+          min: t("form.inputs.phone.errors.min"),
+          max: t("form.inputs.phone.errors.max"),
+          required: t("form.inputs.phone.errors.required"),
+        },
+      },
+      email: {
+        placeholder: t("form.inputs.email.placeholder"),
+        errors: {
+          required: t("form.inputs.email.errors.required"),
+          email: t("form.inputs.email.errors.email"),
+        },
+      },
       residenceType: {
         placeholder: t("form.inputs.residenceType.placeholder"),
-        error: t("form.inputs.residenceType.error"),
+        errors: {
+          required: t("form.inputs.residenceType.errors.required"),
+        },
       },
       howDidYouHearAboutUs: {
         placeholder: t("form.inputs.howDidYouHearAboutUs.placeholder"),
-        error: t("form.inputs.howDidYouHearAboutUs.error"),
+        errors: {
+          required: t("form.inputs.howDidYouHearAboutUs.errors.required"),
+        },
         options: {
-          "arkadas-tavsiyesi": t("form.inputs.howDidYouHearAboutUs.options.arkadas-tavsiyesi"),
-          internet: t("form.inputs.howDidYouHearAboutUs.options.internet"),
-          "sosyal-medya": t("form.inputs.howDidYouHearAboutUs.options.sosyal-medya"),
-          "acikhava-reklamlari": t("form.inputs.howDidYouHearAboutUs.options.acikhava-reklamlari"),
+          reference: t("form.inputs.howDidYouHearAboutUs.options.reference"),
+          projectVisit: t("form.inputs.howDidYouHearAboutUs.options.projectVisit"),
+          internetSocialMedia: t("form.inputs.howDidYouHearAboutUs.options.internetSocialMedia"),
+          billboard: t("form.inputs.howDidYouHearAboutUs.options.billboard"),
+          newspaperMagazine: t("form.inputs.howDidYouHearAboutUs.options.newspaperMagazine"),
         },
       },
       message: { placeholder: t("form.inputs.message.placeholder") },
       consent: {
         placeholder: t("form.inputs.consent.placeholder"),
-        error: t("form.inputs.consent.error"),
+        errors: {
+          required: t("form.inputs.consent.errors.required"),
+        },
       },
     },
     submit: {
@@ -68,9 +94,9 @@ export default function Contact() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-start gap-6 lg:gap-8 px-4 lg:px-12 py-0 xl:py-8 pb-8 lg:pb-20 xl:mt-32">
+        <div className="flex flex-col justify-start gap-6 lg:gap-8 px-4 lg:px-12 pb-8 lg:pb-20 xl:mt-32">
           <div className="block xl:hidden col-span-1 -mx-4 lg:-mx-12 lg:h-[500px]">{video}</div>
-          <h1 className="text-neutral-900 text-lg md:text-xl font-normal font-halenoir max-w-xl">{t("description")}</h1>
+          <h1 className="text-neutral-900 text-sm font-normal font-halenoir max-w-xs">{t("description")}</h1>
           <div className="lg:pr-48 xl:pr-0 pb-12 lg:pb-0">
             <ContactForm translations={formTranslations} />
           </div>

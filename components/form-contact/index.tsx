@@ -5,36 +5,42 @@ import { useMutation } from "@tanstack/react-query"
 import { useLenis } from "lenis/react"
 import { AnimatePresence, motion } from "motion/react"
 import { useLocale, useTranslations } from "next-intl"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { AnimatedButton } from "@/components/animated-button"
-import { DropdownMenuCheckboxes, DropdownMenuCheckboxesRef } from "@/components/dropdown-menu"
+import { DropdownMenuCheckboxesResidences, DropdownMenuCheckboxesRef } from "@/components/dropdown-menu-residences"
+import { DropdownMenuCheckboxesHear } from "@/components/dropdown-menu-hear"
 import { IconLoading } from "@/components/icons"
+import { PhoneInput } from "@/components/phone-input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { countryPhoneCodes } from "@/lib/constants"
 import { FormTranslations } from "@/types"
 
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
-    name: z.string().min(1, { message: translations.inputs.name.error }),
-    surname: z.string().min(1, { message: translations.inputs.surname.error }),
-    countryCode: z.string().min(1, { message: "Country code is required" }),
+    name: z.string().min(1, { message: translations.inputs.name.errors.required }),
+    surname: z.string().min(1, { message: translations.inputs.surname.errors.required }),
+    // countryCode: z.string().min(1, { message: "Country code is required" }),
     phone: z
       .string()
-      .min(1, { message: translations.inputs.phone.error })
-      .regex(/^\+?[1-9]\d{1,14}$/, { message: translations.inputs.phone.error })
-      .refine((val) => /^\+?[0-9]+$/.test(val), { message: translations.inputs.phone.error }),
-    email: z.string().email({ message: translations.inputs.email.error }),
-    residenceType: z.string().min(1, { message: translations.inputs.residenceType.error }),
-    howDidYouHearAboutUs: z.string().min(1, { message: translations.inputs.howDidYouHearAboutUs.error }),
+      .min(12, { message: translations.inputs.phone.errors.min })
+      .max(15, { message: translations.inputs.phone.errors.max }),
+    email: z
+      .string()
+      .min(1, { message: translations.inputs.email.errors.required })
+      .email({ message: translations.inputs.email.errors.email }),
+    residenceType: z.string().min(1, { message: translations.inputs.residenceType.errors.required }),
+    howDidYouHearAboutUs: z.string().min(1, { message: translations.inputs.howDidYouHearAboutUs.errors.required }),
     message: z.string(),
-    consent: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.error }),
+    consent: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
+    consentElectronicMessage: z.boolean(),
+    consentSms: z.boolean(),
+    consentEmail: z.boolean(),
+    consentPhone: z.boolean(),
   })
 
 type FormValues = z.infer<ReturnType<typeof getFormSchema>>
@@ -56,13 +62,16 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
     name={name}
     render={({ field }) => (
       <FormItem>
+        <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
+          {placeholder}
+        </FormLabel>
         <FormControl>
           <Input
             placeholder={placeholder}
             type={type}
             {...field}
             value={field.value?.toString() ?? ""}
-            className={`${commonInputStyles} py-4 px-2 border-bricky-brick-light ${className}`}
+            className={`${commonInputStyles} h-10 px-2 border border-bricky-brick-light rounded-md ${className}`}
             inputMode={name === "phone" ? "tel" : undefined}
             pattern={name === "phone" ? "\\+?[0-9]*" : undefined}
             onChange={(e) => {
@@ -70,6 +79,10 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
               if (name === "phone") {
                 // Allow only numbers and '+' sign
                 const formattedValue = value.replace(/[^\d+]/g, "")
+                field.onChange(formattedValue)
+              } else if (name === "name" || name === "surname") {
+                // Allow only letters
+                const formattedValue = value.replace(/[^a-zA-Z\s]/g, "")
                 field.onChange(formattedValue)
               } else {
                 field.onChange(value)
@@ -125,13 +138,26 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
 //   />
 // )
 
-interface FormErrorMessageProps {
-  message?: string
+interface UseFormMessage {
+  message: { type: "success" | "error"; text: string } | null
+  showMessage: (type: "success" | "error", text: string) => void
+  clearMessage: () => void
 }
 
-const FormErrorMessage = ({ message }: FormErrorMessageProps) => {
-  if (!message) return null
-  return <span className="font-halenoir text-red-500 text-[0.8rem] mt-2 font-medium">{message}</span>
+const useFormMessage = (timeout = 5000): UseFormMessage => {
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+
+  const clearMessage = useCallback(() => setMessage(null), [])
+
+  const showMessage = useCallback(
+    (type: "success" | "error", text: string) => {
+      setMessage({ type, text })
+      setTimeout(clearMessage, timeout)
+    },
+    [timeout, clearMessage]
+  )
+
+  return { message, showMessage, clearMessage }
 }
 
 interface FormContactProps {
@@ -139,7 +165,7 @@ interface FormContactProps {
 }
 
 export function ContactForm({ translations }: FormContactProps) {
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+  const { message, showMessage } = useFormMessage()
   const lenis = useLenis()
   const t = useTranslations()
   const locale = useLocale()
@@ -157,15 +183,26 @@ export function ContactForm({ translations }: FormContactProps) {
     defaultValues: {
       name: "",
       surname: "",
-      countryCode: "+90",
+      // countryCode: "90",
       phone: "",
       email: "",
       residenceType: "",
       howDidYouHearAboutUs: "",
       message: "",
       consent: false,
+      consentElectronicMessage: false,
+      consentSms: false,
+      consentEmail: false,
+      consentPhone: false,
     },
   })
+
+  const consentElectronicMessageValue = form.watch("consentElectronicMessage")
+  const consentSmsValue = form.watch("consentSms")
+  const consentEmailValue = form.watch("consentEmail")
+  const consentPhoneValue = form.watch("consentPhone")
+  const residenceTypeValue = form.watch("residenceType")
+  const howDidYouHearAboutUsValue = form.watch("howDidYouHearAboutUs")
 
   // Generic function to get any UTM parameter
   const getUtmParameter = (param: string) => {
@@ -204,11 +241,11 @@ export function ContactForm({ translations }: FormContactProps) {
         const result = await response.json()
 
         if (!response.ok) {
-          setMessage({ type: "error", text: result.message || "Failed to submit form" })
+          showMessage("error", result.message || "Failed to submit form")
           throw new Error(result.message || "Failed to submit form")
         }
 
-        setMessage({ type: "success", text: result.message })
+        showMessage("success", result.message)
         return result
       } catch (error) {
         console.error("Form submission error:", error)
@@ -218,16 +255,22 @@ export function ContactForm({ translations }: FormContactProps) {
     onSuccess: () => {
       form.reset()
       form.clearErrors()
+      form.setValue("residenceType", "", {
+        shouldValidate: true,
+        shouldDirty: false,
+        shouldTouch: false,
+      })
+      form.setValue("howDidYouHearAboutUs", "", {
+        shouldValidate: true,
+        shouldDirty: false,
+        shouldTouch: false,
+      })
       resetDropdowns()
-      // Clear success message after 5 seconds
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
     },
     onError: () => {
       // Clear error message after 5 seconds
       setTimeout(() => {
-        setMessage(null)
+        showMessage("error", "")
       }, 5000)
     },
   })
@@ -240,6 +283,29 @@ export function ContactForm({ translations }: FormContactProps) {
     lenis?.resize()
   }, [form.formState, lenis])
 
+  useEffect(() => {
+    if (consentElectronicMessageValue && (!consentSmsValue || !consentEmailValue || !consentPhoneValue)) {
+      form.setValue("consentSms", true)
+      form.setValue("consentEmail", true)
+      form.setValue("consentPhone", true)
+      return
+    }
+
+    form.setValue("consentSms", false)
+    form.setValue("consentEmail", false)
+    form.setValue("consentPhone", false)
+  }, [consentElectronicMessageValue])
+
+  useEffect(() => {
+    if (!consentSmsValue && !consentEmailValue && !consentPhoneValue && consentElectronicMessageValue) {
+      form.setValue("consentElectronicMessage", false)
+    }
+
+    if (consentSmsValue || consentEmailValue || consentPhoneValue) {
+      form.setValue("consentElectronicMessage", true)
+    }
+  }, [consentSmsValue, consentEmailValue, consentPhoneValue])
+
   const residenceTypeOptions = [
     { id: "1+1", label: "1+1" },
     { id: "2+1", label: "2+1" },
@@ -250,126 +316,98 @@ export function ContactForm({ translations }: FormContactProps) {
   ]
 
   const howDidYouHearAboutUsOptions = [
-    { id: "arkadas-tavsiyesi", label: translations.inputs.howDidYouHearAboutUs.options["arkadas-tavsiyesi"] },
-    { id: "internet", label: translations.inputs.howDidYouHearAboutUs.options.internet },
-    { id: "sosyal-medya", label: translations.inputs.howDidYouHearAboutUs.options["sosyal-medya"] },
-    { id: "acikhava-reklamlari", label: translations.inputs.howDidYouHearAboutUs.options["acikhava-reklamlari"] },
+    { id: "reference", label: translations.inputs.howDidYouHearAboutUs.options.reference },
+    { id: "projectVisit", label: translations.inputs.howDidYouHearAboutUs.options.projectVisit },
+    { id: "internetSocialMedia", label: translations.inputs.howDidYouHearAboutUs.options.internetSocialMedia },
+    { id: "billboard", label: translations.inputs.howDidYouHearAboutUs.options.billboard },
+    { id: "newspaperMagazine", label: translations.inputs.howDidYouHearAboutUs.options.newspaperMagazine },
   ]
 
-  const residenceTypeValue = form.watch("residenceType")
-  const howDidYouHearAboutUsValue = form.watch("howDidYouHearAboutUs")
+  const handleResidenceType = useCallback(
+    (id: string, checked: boolean) => {
+      const currentValue = form.getValues("residenceType") || ""
+      const currentIds = currentValue ? currentValue.split(",") : []
+      const newIds = checked ? [...currentIds, id].filter(Boolean) : currentIds.filter((val) => val !== id)
+      form.setValue("residenceType", newIds.join(","))
+    },
+    [form]
+  )
+
+  const handleHowDidYouHearAboutUs = useCallback(
+    (id: string, checked: boolean) => {
+      const option = howDidYouHearAboutUsOptions.find((opt) => opt.id === id)
+      if (!option) return
+
+      const currentValue = form.getValues("howDidYouHearAboutUs") || ""
+      const currentLabels = currentValue ? currentValue.split(",") : []
+      const newLabels = checked
+        ? [...currentLabels, option.label].filter(Boolean)
+        : currentLabels.filter((label) => label !== option.label)
+
+      form.setValue("howDidYouHearAboutUs", newLabels.join(","))
+    },
+    [form, howDidYouHearAboutUsOptions]
+  )
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="font-halenoir space-y-6 lg:space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="font-halenoir space-y-6 lg:space-y-6">
         <div className="flex flex-col lg:grid grid-flow-col gap-6 lg:gap-4 md:grid-cols-2">
           <FormInput control={form.control} name="name" placeholder={translations.inputs.name.placeholder} />
           <FormInput control={form.control} name="surname" placeholder={translations.inputs.surname.placeholder} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4">
-          <div className="grid grid-cols-12 gap-2 items-start col-span-1">
-            <div className="col-start-1 col-end-4 row-start-1 row-end-2 z-20">
-              <FormField
-                control={form.control}
-                name="countryCode"
-                render={({ field }) => (
-                  <FormItem className="col-span-1">
-                    <FormControl>
-                      <Select onValueChange={field.onChange} value={field.value} defaultValue={"+90"}>
-                        <SelectTrigger className="h-9 rounded-none text-neutral-950 cursor-pointer text-base md:text-sm">
-                          <SelectValue placeholder={field.value || "ÜLKE KODU"}>{field.value}</SelectValue>
-                        </SelectTrigger>
-                        <SelectContent className="text-neutral-950">
-                          <SelectGroup>
-                            {countryPhoneCodes[locale as keyof typeof countryPhoneCodes].map((country, index) => (
-                              <SelectItem
-                                key={index}
-                                className="focus:bg-neutral-50 focus:text-neutral-950 cursor-pointer"
-                                value={country.code}
-                              >
-                                {country.name} ({country.code})
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="col-start-1 col-end-13 row-start-1 row-end-2">
-              <FormInput
-                className="pl-24"
-                control={form.control}
-                name="phone"
-                type="tel"
-                placeholder={translations.inputs.phone.placeholder}
-              />
-            </div>
-          </div>
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
+                  {translations.inputs.phone.placeholder}
+                </FormLabel>
+                <FormControl>
+                  <PhoneInput
+                    className="flex gap-1.5"
+                    type="tel"
+                    placeholder={translations.inputs.phone.placeholder}
+                    defaultCountry="TR"
+                    international
+                    minLength={8}
+                    min={8}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormInput
             control={form.control}
             name="email"
-            type="email"
             placeholder={translations.inputs.email.placeholder}
             className="col-span-1 md:col-span-1"
           />
         </div>
         <div className="flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4">
-          <div>
-            <DropdownMenuCheckboxes
-              triggerText={
-                residenceTypeValue
-                  ? residenceTypeValue.split(",").join(", ")
-                  : translations.inputs.residenceType.placeholder
-              }
+          <div className="space-y-1">
+            <DropdownMenuCheckboxesResidences
+              placeholder={translations.inputs.residenceType.placeholder}
+              selectedItems={residenceTypeValue !== "" ? residenceTypeValue.split(",") : []}
               options={residenceTypeOptions}
-              onChange={(id, checked) => {
-                // Get current value
-                const currentValue = form.getValues("residenceType") || ""
-
-                // Convert to array of IDs
-                const currentIds = currentValue ? currentValue.split(",") : []
-
-                // Add or remove the ID based on checked state
-                const newIds = checked ? [...currentIds, id].filter(Boolean) : currentIds.filter((val) => val !== id)
-
-                // Join back to comma-separated string and update form
-                form.setValue("residenceType", newIds.join(","))
-              }}
+              onChange={handleResidenceType}
               ref={residenceTypeDropdownRef}
             />
-            <FormErrorMessage message={form.formState.errors.residenceType?.message} />
+            <FormMessage>{form.formState.errors.residenceType?.message}</FormMessage>
           </div>
-          <div>
-            <DropdownMenuCheckboxes
-              triggerText={
-                howDidYouHearAboutUsValue
-                  ? howDidYouHearAboutUsValue
-                      .split(",")
-                      .map((id) => howDidYouHearAboutUsOptions.find((option) => option.id === id)?.label)
-                      .join(", ")
-                  : translations.inputs.howDidYouHearAboutUs.placeholder
-              }
+          <div className="space-y-1">
+            <DropdownMenuCheckboxesHear
+              placeholder={translations.inputs.howDidYouHearAboutUs.placeholder}
+              selectedItems={howDidYouHearAboutUsValue !== "" ? howDidYouHearAboutUsValue.split(",") : []}
               options={howDidYouHearAboutUsOptions}
-              onChange={(id, checked) => {
-                // Get current value
-                const currentValue = form.getValues("howDidYouHearAboutUs") || ""
-
-                // Convert to array of IDs
-                const currentIds = currentValue ? currentValue.split(",") : []
-
-                // Add or remove the ID based on checked state
-                const newIds = checked ? [...currentIds, id].filter(Boolean) : currentIds.filter((val) => val !== id)
-
-                // Join back to comma-separated string and update form
-                form.setValue("howDidYouHearAboutUs", newIds.join(","))
-              }}
+              onChange={handleHowDidYouHearAboutUs}
               ref={howDidYouHearAboutUsDropdownRef}
             />
-            <FormErrorMessage message={form.formState.errors.howDidYouHearAboutUs?.message} />
+            <FormMessage>{form.formState.errors.howDidYouHearAboutUs?.message}</FormMessage>
           </div>
         </div>
         <div className="grid grid-flow-col">
@@ -377,14 +415,14 @@ export function ContactForm({ translations }: FormContactProps) {
             control={form.control}
             name="message"
             render={({ field }) => (
-              <FormItem className="space-y-0 pt-2">
-                <FormLabel className="text-neutral-950 font-normal pl-2 lg:pl-4 leading-none block -mb-8 lg:-mb-8 text-base md:text-sm">
+              <FormItem className="space-y-1 pt-2">
+                <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
                   {translations.inputs.message.placeholder}
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
-                    className={`${commonInputStyles} min-h-[140px] p-3 pt-8 lg:pt-8 rounded-md border border-bricky-brick-light resize-none`}
+                    className={`${commonInputStyles} min-h-[140px] p-3 rounded-md border border-bricky-brick-light resize-none`}
                   />
                 </FormControl>
                 <FormMessage />
@@ -398,15 +436,11 @@ export function ContactForm({ translations }: FormContactProps) {
             name="consent"
             render={({ field }) => (
               <FormItem>
-                <div className="flex flex-row gap-3 space-y-0">
+                <div className="flex flex-row gap-3 space-y-0 group">
                   <FormControl>
-                    <Checkbox
-                      className="border-neutral-900 data-[state=checked]:bg-neutral-900"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
-                  <FormLabel className="text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
+                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
                     {t.rich("contact.form.inputs.consent.placeholder", {
                       Clarification: (chunks) => (
                         <a
@@ -423,6 +457,126 @@ export function ContactForm({ translations }: FormContactProps) {
                           target="_blank"
                           rel="norefferer noopener"
                           href="/pdf/acik-riza-metni.pdf"
+                          className="text-neutral-950 underline"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </FormLabel>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div>
+          <FormField
+            control={form.control}
+            name="consentElectronicMessage"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-row gap-3 space-y-0 group">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
+                    {t.rich("contact.form.inputs.consentElectronicMessage.placeholder", {
+                      Clarification: (chunks) => (
+                        <a
+                          target="_blank"
+                          rel="norefferer noopener"
+                          href="/pdf/kvkk-aydinlatma-metni.pdf"
+                          className="text-neutral-950 underline"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </FormLabel>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div>
+          <FormField
+            control={form.control}
+            name="consentSms"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-row gap-3 space-y-0 group">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
+                    {t.rich("contact.form.inputs.consentSms.placeholder", {
+                      Clarification: (chunks) => (
+                        <a
+                          target="_blank"
+                          rel="norefferer noopener"
+                          href="/pdf/kvkk-aydinlatma-metni.pdf"
+                          className="text-neutral-950 underline"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </FormLabel>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div>
+          <FormField
+            control={form.control}
+            name="consentEmail"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-row gap-3 space-y-0 group">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
+                    {t.rich("contact.form.inputs.consentEmail.placeholder", {
+                      Clarification: (chunks) => (
+                        <a
+                          target="_blank"
+                          rel="norefferer noopener"
+                          href="/pdf/kvkk-aydinlatma-metni.pdf"
+                          className="text-neutral-950 underline"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </FormLabel>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div>
+          <FormField
+            control={form.control}
+            name="consentPhone"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-row gap-3 space-y-0 group">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
+                    {t.rich("contact.form.inputs.consentPhone.placeholder", {
+                      Clarification: (chunks) => (
+                        <a
+                          target="_blank"
+                          rel="norefferer noopener"
+                          href="/pdf/kvkk-aydinlatma-metni.pdf"
                           className="text-neutral-950 underline"
                         >
                           {chunks}

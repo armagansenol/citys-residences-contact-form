@@ -216,13 +216,28 @@ export interface ContactInfo {
 
 export interface FormTranslations {
   inputs: {
-    name: { placeholder: string; error: string }
-    surname: { placeholder: string; error: string }
-    phone: { placeholder: string; error: string }
-    email: { placeholder: string; error: string }
-    residenceType: { placeholder: string; error: string }
-    howDidYouHearAboutUs: { placeholder: string; error: string; options: Record<string, string> }
-    consent: { placeholder: string; error: string }
+    name: { placeholder: string; errors: { required: string } }
+    surname: { placeholder: string; errors: { required: string } }
+    phone: {
+      placeholder: string
+      errors: {
+        min: string
+        max: string
+        required: string
+      }
+    }
+    email: { placeholder: string; errors: { required: string; email: string } }
+    residenceType: { placeholder: string; errors: { required: string } }
+    howDidYouHearAboutUs: {
+      placeholder: string
+      errors: { required: string }
+      options: Record<string, string>
+    }
+    consent: { placeholder: string; errors: { required: string } }
+    consentElectronicMessage: { placeholder: string }
+    consentSms: { placeholder: string }
+    consentEmail: { placeholder: string }
+    consentPhone: { placeholder: string }
     message: { placeholder: string }
   }
   submit: {
