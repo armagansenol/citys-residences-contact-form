@@ -47,7 +47,7 @@
                     }
                 },
                 "howDidYouHearAboutUs": {
-                    "placeholder": "Bizi nereden duydunuz?",
+                    "placeholder": "Bizi Nereden Duydunuz?",
                     "errors": {
                         "required": "Zorunlu alan"
                     },
