@@ -68,7 +68,7 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
       <FormField
         name="phone"
         control={form.control}
-        render={({ field }) => (
+        render={() => (
           <FormItem className="col-span-9">
             <FormControl>
               <Input
