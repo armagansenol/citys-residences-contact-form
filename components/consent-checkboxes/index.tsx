@@ -1,7 +1,7 @@
-import { Control } from "react-hook-form"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useTranslations } from "next-intl"
+import { Control } from "react-hook-form"
 
 interface ConsentCheckboxesProps {
   control: Control<any>
