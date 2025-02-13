@@ -1,12 +1,8 @@
-import * as React from "react"
-import { FormMessage } from "../ui/form"
-import { Select, SelectItem, SelectGroup, SelectContent, SelectTrigger, SelectValue } from "../ui/select"
-import { FormControl, FormItem } from "../ui/form"
+import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { UseFormReturn } from "react-hook-form"
-import { defaultCountries } from "react-international-phone"
-import { usePhoneInput } from "react-international-phone"
-import { FormField } from "../ui/form"
-import { Input } from "../ui/input"
+import { defaultCountries, usePhoneInput } from "react-international-phone"
 
 export interface InternationalPhoneInputProps {
   form: UseFormReturn<any> // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -16,14 +12,14 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
   const { country, setCountry, phone, handlePhoneValueChange } = usePhoneInput({
     countries: defaultCountries,
     defaultCountry: "tr",
+    value: form.getValues("phone"),
     disableDialCodePrefill: true,
-    // disableCountryGuess: true,
-    // disableDialCodeAndPrefix: true,
+    disableCountryGuess: true,
+    disableDialCodeAndPrefix: false,
+    prefix: "",
     onChange: ({ phone, country }) => {
-      console.log("phone", phone)
-      console.log("country", country)
-      //   form?.setValue("countryCode", country.dialCode)
-      //   form?.setValue("phone", phone)
+      form.setValue("phone", phone)
+      form.setValue("countryCode", country.dialCode, { shouldValidate: true })
     },
   })
 
@@ -37,26 +33,26 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
             <FormControl>
               <Select
                 onValueChange={(value) => {
-                  // Find the country from defaultCountries that matches the selected dial code
                   const selectedCountry = defaultCountries.find((c) => c[2] === value)
                   if (selectedCountry) {
-                    setCountry(selectedCountry[1].toLowerCase()) // Use ISO code (lowercase)
-                    field.onChange(value) // Update form value with dial code
+                    setCountry(selectedCountry[1].toLowerCase())
+                    field.onChange(value)
+                    form.trigger(["countryCode", "phone"])
                   }
                 }}
-                value={country.dialCode.toString()}
+                value={field.value || country.dialCode.toString()}
                 defaultValue="90"
               >
                 <SelectTrigger className="h-10 rounded-md text-neutral-950 cursor-pointer text-base md:text-sm border border-bricky-brick-light">
-                  <SelectValue placeholder="Code">+{country.dialCode}</SelectValue>
+                  <SelectValue placeholder="Code">+{field.value || country.dialCode}</SelectValue>
                 </SelectTrigger>
                 <SelectContent className="bg-white text-neutral-950 border border-bricky-brick-light rounded-md z-50">
                   <SelectGroup>
                     {defaultCountries.map((c, index) => (
                       <SelectItem
-                        key={`${index}-${c[1]}-${c[2]}`} // Adding index for guaranteed uniqueness
+                        key={`${index}-${c[1]}-${c[2]}`}
                         className="focus:bg-neutral-50 focus:text-neutral-950 cursor-pointer px-4 py-2 font-halenoir text-base md:text-sm"
-                        value={c[2].toString()} // Dial code as value
+                        value={c[2].toString()}
                       >
                         {c[0]} (+{c[2]})
                       </SelectItem>
@@ -79,10 +75,7 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
                 className="h-10 border border-bricky-brick-light rounded-md"
                 placeholder={"Telefon Numarası"}
                 name="phone"
-                onChange={(e) => {
-                  handlePhoneValueChange(e)
-                  field.onChange(e)
-                }}
+                onChange={handlePhoneValueChange}
                 type="tel"
                 value={phone}
               />
