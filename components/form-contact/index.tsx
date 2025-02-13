@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useLenis } from "lenis/react"
 import { AnimatePresence, motion } from "motion/react"
 import { useLocale } from "next-intl"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -75,8 +75,8 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
             onChange={(e) => {
               const value = e.target.value
               if (name === "name" || name === "surname") {
-                // Allow only letters
-                const formattedValue = value.replace(/[^a-zA-Z\s]/g, "")
+                // Allow letters including Turkish characters
+                const formattedValue = value.replace(/[^a-zA-ZğĞıİöÖüÜşŞçÇ\s]/g, "")
                 field.onChange(formattedValue)
               } else {
                 field.onChange(value)
@@ -190,10 +190,6 @@ export function ContactForm({ translations }: FormContactProps) {
     },
   })
 
-  const consentElectronicMessageValue = form.watch("consentElectronicMessage")
-  const consentSmsValue = form.watch("consentSms")
-  const consentEmailValue = form.watch("consentEmail")
-  const consentPhoneValue = form.watch("consentPhone")
   const residenceTypeValue = form.watch("residenceType")
   const howDidYouHearAboutUsValue = form.watch("howDidYouHearAboutUs")
 
@@ -262,50 +258,28 @@ export function ContactForm({ translations }: FormContactProps) {
     lenis?.resize()
   }, [form.formState, lenis])
 
-  useEffect(() => {
-    if (!consentElectronicMessageValue) {
-      form.setValue("consentSms", false)
-      form.setValue("consentEmail", false)
-      form.setValue("consentPhone", false)
-    }
-  }, [consentElectronicMessageValue])
+  const residenceTypeOptions = useMemo(
+    () => [
+      { id: "1+1", label: "1+1" },
+      { id: "2+1", label: "2+1" },
+      { id: "3+1", label: "3+1" },
+      { id: "4+1", label: "4+1" },
+      { id: "5+1", label: "5+1" },
+      { id: "6+1", label: "6+1" },
+    ],
+    []
+  )
 
-  useEffect(() => {
-    if (consentSmsValue || consentEmailValue || consentPhoneValue) {
-      form.setValue("consentElectronicMessage", true)
-      form.setValue("consent", true)
-    } else {
-      form.setValue("consentElectronicMessage", false)
-      form.setValue("consent", false)
-    }
-  }, [consentSmsValue, consentEmailValue, consentPhoneValue])
-
-  useEffect(() => {
-    const isFirstCheck = consentElectronicMessageValue && !consentSmsValue && !consentEmailValue && !consentPhoneValue
-
-    if (isFirstCheck) {
-      form.setValue("consentSms", true)
-      form.setValue("consentEmail", true)
-      form.setValue("consentPhone", true)
-    }
-  }, [consentElectronicMessageValue])
-
-  const residenceTypeOptions = [
-    { id: "1+1", label: "1+1" },
-    { id: "2+1", label: "2+1" },
-    { id: "3+1", label: "3+1" },
-    { id: "4+1", label: "4+1" },
-    { id: "5+1", label: "5+1" },
-    { id: "6+1", label: "6+1" },
-  ]
-
-  const howDidYouHearAboutUsOptions = [
-    { id: "reference", label: translations.inputs.howDidYouHearAboutUs.options.reference },
-    { id: "projectVisit", label: translations.inputs.howDidYouHearAboutUs.options.projectVisit },
-    { id: "internetSocialMedia", label: translations.inputs.howDidYouHearAboutUs.options.internetSocialMedia },
-    { id: "billboard", label: translations.inputs.howDidYouHearAboutUs.options.billboard },
-    { id: "newspaperMagazine", label: translations.inputs.howDidYouHearAboutUs.options.newspaperMagazine },
-  ]
+  const howDidYouHearAboutUsOptions = useMemo(
+    () => [
+      { id: "reference", label: translations.inputs.howDidYouHearAboutUs.options.reference },
+      { id: "projectVisit", label: translations.inputs.howDidYouHearAboutUs.options.projectVisit },
+      { id: "internetSocialMedia", label: translations.inputs.howDidYouHearAboutUs.options.internetSocialMedia },
+      { id: "billboard", label: translations.inputs.howDidYouHearAboutUs.options.billboard },
+      { id: "newspaperMagazine", label: translations.inputs.howDidYouHearAboutUs.options.newspaperMagazine },
+    ],
+    [translations.inputs.howDidYouHearAboutUs.options]
+  )
 
   const handleResidenceType = useCallback(
     (id: string, checked: boolean) => {
@@ -432,7 +406,7 @@ export function ContactForm({ translations }: FormContactProps) {
           />
         </div>
 
-        <ConsentCheckboxes control={form.control} />
+        <ConsentCheckboxes form={form} control={form.control} />
 
         <button type="submit" disabled={mutation.isPending} className="flex relative">
           <AnimatedButton text={translations.submit.default} />

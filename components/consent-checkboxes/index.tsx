@@ -1,15 +1,49 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useTranslations } from "next-intl"
-import { Control } from "react-hook-form"
+import { useEffect } from "react"
+import { Control, UseFormReturn } from "react-hook-form"
 
 interface ConsentCheckboxesProps {
   control: Control<any> // eslint-disable-line @typescript-eslint/no-explicit-any
   className?: string
+  form: UseFormReturn<any> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-export function ConsentCheckboxes({ control, className }: ConsentCheckboxesProps) {
+export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxesProps) {
   const t = useTranslations()
+
+  const consentElectronicMessageValue = form.watch("consentElectronicMessage")
+  const consentSmsValue = form.watch("consentSms")
+  const consentEmailValue = form.watch("consentEmail")
+  const consentPhoneValue = form.watch("consentPhone")
+
+  useEffect(() => {
+    if (!consentElectronicMessageValue) {
+      form.setValue("consentSms", false)
+      form.setValue("consentEmail", false)
+      form.setValue("consentPhone", false)
+    }
+  }, [consentElectronicMessageValue])
+
+  useEffect(() => {
+    if (consentSmsValue || consentEmailValue || consentPhoneValue) {
+      form.setValue("consentElectronicMessage", true)
+      form.setValue("consent", true)
+    } else {
+      form.setValue("consentElectronicMessage", false)
+    }
+  }, [consentSmsValue, consentEmailValue, consentPhoneValue])
+
+  useEffect(() => {
+    const isFirstCheck = consentElectronicMessageValue && !consentSmsValue && !consentEmailValue && !consentPhoneValue
+
+    if (isFirstCheck) {
+      form.setValue("consentSms", true)
+      form.setValue("consentEmail", true)
+      form.setValue("consentPhone", true)
+    }
+  }, [consentElectronicMessageValue])
 
   return (
     <div className={`space-y-5 ${className}`}>
