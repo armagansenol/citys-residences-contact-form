@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { PhoneNumberUtil } from "google-libphonenumber"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -17,4 +18,14 @@ export const getUtmParameter = (param: string) => {
     return urlParams.get(param) || ""
   }
   return ""
+}
+
+const phoneUtil = PhoneNumberUtil.getInstance()
+
+export const isPhoneValid = (phone: string) => {
+  try {
+    return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(phone))
+  } catch (error) {
+    return false
+  }
 }

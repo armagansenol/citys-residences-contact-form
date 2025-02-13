@@ -28,7 +28,7 @@
                 "phone": {
                     "placeholder": "Phone Number",
                     "errors": {
-                        "required": "Required field",
+                        "required": "Please enter a valid phone number",
                         "min": "Phone number must be at least 8 characters long",
                         "max": "Phone number must be at most 15 characters long"
                     }

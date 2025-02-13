@@ -28,7 +28,7 @@
                 "phone": {
                     "placeholder": "Telefon Numaranız",
                     "errors": {
-                        "required": "Zorunlu alan",
+                        "required": "Lütfen geçerli bir telefon numarası giriniz",
                         "min": "Telefon numarası en az 8 karakter olmalıdır",
                         "max": "Telefon numarası en fazla 15 karakter olmalıdır"
                     }

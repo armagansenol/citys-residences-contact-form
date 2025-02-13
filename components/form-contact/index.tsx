@@ -10,26 +10,25 @@ import { Control, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { AnimatedButton } from "@/components/animated-button"
-import { DropdownMenuCheckboxesResidences, DropdownMenuCheckboxesRef } from "@/components/dropdown-menu-residences"
+import { ConsentCheckboxes } from "@/components/consent-checkboxes"
 import { DropdownMenuCheckboxesHear } from "@/components/dropdown-menu-hear"
+import { DropdownMenuCheckboxesRef, DropdownMenuCheckboxesResidences } from "@/components/dropdown-menu-residences"
 import { IconLoading } from "@/components/icons"
-import { PhoneInput } from "@/components/phone-input"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { getUtmParameter, isPhoneValid } from "@/lib/utils"
 import { FormTranslations } from "@/types"
-import { getUtmParameter } from "@/lib/utils"
+import { InternationalPhoneInputComponent } from "../international-phone-input"
 
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
     name: z.string().min(1, { message: translations.inputs.name.errors.required }),
     surname: z.string().min(1, { message: translations.inputs.surname.errors.required }),
-    // countryCode: z.string().min(1, { message: "Country code is required" }),
-    phone: z
-      .string()
-      .min(12, { message: translations.inputs.phone.errors.min })
-      .max(15, { message: translations.inputs.phone.errors.max }),
+    countryCode: z.string().min(1, { message: "Country code is required" }),
+    phone: z.string().refine(isPhoneValid, { message: translations.inputs.phone.errors.required }),
+    // .min(12, { message: translations.inputs.phone.errors.min })
+    // .max(15, { message: translations.inputs.phone.errors.max })
     email: z
       .string()
       .min(1, { message: translations.inputs.email.errors.required })
@@ -72,16 +71,10 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
             type={type}
             {...field}
             value={field.value?.toString() ?? ""}
-            className={`${commonInputStyles} h-10 px-2 border border-bricky-brick-light rounded-md ${className}`}
-            inputMode={name === "phone" ? "tel" : undefined}
-            pattern={name === "phone" ? "\\+?[0-9]*" : undefined}
+            className={`${commonInputStyles} h-10 px-4 border border-bricky-brick-light rounded-md ${className}`}
             onChange={(e) => {
               const value = e.target.value
-              if (name === "phone") {
-                // Allow only numbers and '+' sign, and limit to 15 characters
-                const formattedValue = value.replace(/[^\d+]/g, "").slice(0, 15)
-                field.onChange(formattedValue)
-              } else if (name === "name" || name === "surname") {
+              if (name === "name" || name === "surname") {
                 // Allow only letters
                 const formattedValue = value.replace(/[^a-zA-Z\s]/g, "")
                 field.onChange(formattedValue)
@@ -184,7 +177,7 @@ export function ContactForm({ translations }: FormContactProps) {
     defaultValues: {
       name: "",
       surname: "",
-      // countryCode: "90",
+      countryCode: "",
       phone: "",
       email: "",
       residenceType: "",
@@ -271,7 +264,6 @@ export function ContactForm({ translations }: FormContactProps) {
   }, [form.formState, lenis])
 
   useEffect(() => {
-    // If consentElectronicMessage is unchecked, uncheck all other consents
     if (!consentElectronicMessageValue) {
       form.setValue("consentSms", false)
       form.setValue("consentEmail", false)
@@ -280,16 +272,15 @@ export function ContactForm({ translations }: FormContactProps) {
   }, [consentElectronicMessageValue])
 
   useEffect(() => {
-    // If any individual consent is checked, ensure consentElectronicMessage is checked
     if (consentSmsValue || consentEmailValue || consentPhoneValue) {
       form.setValue("consentElectronicMessage", true)
+      form.setValue("consent", true)
     } else {
-      // If all individual consents are unchecked, uncheck consentElectronicMessage
       form.setValue("consentElectronicMessage", false)
+      form.setValue("consent", false)
     }
   }, [consentSmsValue, consentEmailValue, consentPhoneValue])
 
-  // Add this new effect to handle the first-time check of consentElectronicMessage
   useEffect(() => {
     const isFirstCheck = consentElectronicMessageValue && !consentSmsValue && !consentEmailValue && !consentPhoneValue
 
@@ -344,9 +335,7 @@ export function ContactForm({ translations }: FormContactProps) {
         ? [...currentLabels, option.label].filter(Boolean)
         : currentLabels.filter((label) => label !== option.label)
 
-      form.setValue("howDidYouHearAboutUs", newLabels.join(","), {
-        shouldValidate: newLabels.length > 0,
-      })
+      form.setValue("howDidYouHearAboutUs", newLabels.join(","))
     },
     [form, howDidYouHearAboutUsOptions]
   )
@@ -363,48 +352,18 @@ export function ContactForm({ translations }: FormContactProps) {
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4">
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
-                  {`${translations.inputs.phone.placeholder}*`}
-                </FormLabel>
-                <FormControl>
-                  <PhoneInput
-                    className="flex gap-1.5"
-                    type="tel"
-                    placeholder={translations.inputs.phone.placeholder}
-                    defaultCountry="TR"
-                    international={false}
-                    initialValueFormat="national"
-                    // value={field.value}
-                    {...field}
-                    // onChange={(value) => {
-                    //   console.log("PhoneInput onChange triggered with value:", value)
-                    //   if (value) {
-                    //     const formattedValue = value.replace(/[^\d+]/g, "").slice(0, 12)
-                    //     console.log("Formatted value:", formattedValue)
-                    //     field.onChange(formattedValue)
-                    //   }
-                    // }}
-
-                    limitMaxLength={true}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormInput
-            control={form.control}
-            name="email"
-            type="email"
-            placeholder={`${translations.inputs.email.placeholder}*`}
-            className="col-span-1 md:col-span-1"
-          />
+          <InternationalPhoneInputComponent form={form} />
+          <div className="col-span-1">
+            <FormInput
+              control={form.control}
+              name="email"
+              type="email"
+              placeholder={`${locale === "tr" ? "E-Posta" : "Email"}*`}
+              className="col-span-1 md:col-span-1"
+            />
+          </div>
         </div>
+
         <div className="flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4">
           <div className="space-y-1">
             <FormField
@@ -469,172 +428,8 @@ export function ContactForm({ translations }: FormContactProps) {
             )}
           />
         </div>
-        <div className="space-y-5">
-          <FormField
-            control={form.control}
-            name="consent"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-row gap-3 space-y-0 group">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
-                    {t.rich("contact.form.inputs.consent.placeholder", {
-                      legal1: (chunks) => (
-                        <a
-                          target="_blank"
-                          rel="norefferer noopener"
-                          href="/pdf/citys-residences-kvkk-aydinlatma-metni.pdf"
-                          className="text-neutral-950 underline font-medium"
-                        >
-                          {chunks}
-                        </a>
-                      ),
-                      legal2: (chunks) => (
-                        <a
-                          target="_blank"
-                          rel="norefferer noopener"
-                          href="/pdf/citys-residences-acik-riza-metni.pdf"
-                          className="text-neutral-950 underline font-medium"
-                        >
-                          {chunks}
-                        </a>
-                      ),
-                      legal3: (chunks) => (
-                        <a
-                          target="_blank"
-                          rel="norefferer noopener"
-                          href="/pdf/citys-residences-ticari-elektronik-ileti-aydinlatma-metni.pdf"
-                          className="text-neutral-950 underline font-medium"
-                        >
-                          {chunks}
-                        </a>
-                      ),
-                    })}
-                  </FormLabel>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="space-y-3">
-            <FormField
-              control={form.control}
-              name="consentElectronicMessage"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex flex-row gap-3 space-y-0 group">
-                    <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                    </FormControl>
-                    <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
-                      {t.rich("contact.form.inputs.consentElectronicMessage.placeholder", {
-                        legal4: (chunks) => (
-                          <a
-                            target="_blank"
-                            rel="norefferer noopener"
-                            href="/pdf/citys-residences-acik-riza-beyani.pdf"
-                            className="text-neutral-950 underline font-medium"
-                          >
-                            {chunks}
-                          </a>
-                        ),
-                      })}
-                    </FormLabel>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="space-y-2">
-              <FormField
-                control={form.control}
-                name="consentSms"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex flex-row gap-3 space-y-0 group">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
-                        {t.rich("contact.form.inputs.consentSms.placeholder", {
-                          Clarification: (chunks) => (
-                            <a
-                              target="_blank"
-                              rel="norefferer noopener"
-                              href="/pdf/kvkk-aydinlatma-metni.pdf"
-                              className="text-neutral-950 underline"
-                            >
-                              {chunks}
-                            </a>
-                          ),
-                        })}
-                      </FormLabel>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="consentEmail"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex flex-row gap-3 space-y-0 group">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
-                        {t.rich("contact.form.inputs.consentEmail.placeholder", {
-                          Clarification: (chunks) => (
-                            <a
-                              target="_blank"
-                              rel="norefferer noopener"
-                              href="/pdf/kvkk-aydinlatma-metni.pdf"
-                              className="text-neutral-950 underline"
-                            >
-                              {chunks}
-                            </a>
-                          ),
-                        })}
-                      </FormLabel>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="consentPhone"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex flex-row gap-3 space-y-0 group">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
-                        {t.rich("contact.form.inputs.consentPhone.placeholder", {
-                          Clarification: (chunks) => (
-                            <a
-                              target="_blank"
-                              rel="norefferer noopener"
-                              href="/pdf/kvkk-aydinlatma-metni.pdf"
-                              className="text-neutral-950 underline"
-                            >
-                              {chunks}
-                            </a>
-                          ),
-                        })}
-                      </FormLabel>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        </div>
+
+        <ConsentCheckboxes control={form.control} />
 
         <button type="submit" disabled={mutation.isPending} className="flex relative">
           <AnimatedButton text={translations.submit.default} />

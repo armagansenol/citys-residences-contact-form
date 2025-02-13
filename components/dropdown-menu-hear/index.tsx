@@ -62,7 +62,7 @@ export const DropdownMenuCheckboxesHear = forwardRef<DropdownMenuCheckboxesRef, 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="h-10 w-full border border-bricky-brick-light flex items-center justify-between px-2 lg:px-3 rounded-md text-base md:text-sm outline-none focus:outline-none focus:ring-0"
+            className="h-10 w-full border border-bricky-brick-light flex items-center justify-between px-2 lg:px-4 rounded-md text-base md:text-sm outline-none focus:outline-none focus:ring-0"
             type="button"
           >
             <>
