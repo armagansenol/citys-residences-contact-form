@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { useLenis } from "lenis/react"
 import { AnimatePresence, motion } from "motion/react"
-import { useLocale, useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Control, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -14,12 +14,12 @@ import { ConsentCheckboxes } from "@/components/consent-checkboxes"
 import { DropdownMenuCheckboxesHear } from "@/components/dropdown-menu-hear"
 import { DropdownMenuCheckboxesRef, DropdownMenuCheckboxesResidences } from "@/components/dropdown-menu-residences"
 import { IconLoading } from "@/components/icons"
+import { InternationalPhoneInputComponent } from "@/components/international-phone-input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { getUtmParameter, isPhoneValid } from "@/lib/utils"
 import { FormTranslations } from "@/types"
-import { InternationalPhoneInputComponent } from "../international-phone-input"
 
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
@@ -161,7 +161,6 @@ interface FormContactProps {
 export function ContactForm({ translations }: FormContactProps) {
   const { message, showMessage } = useFormMessage()
   const lenis = useLenis()
-  const t = useTranslations()
   const locale = useLocale()
 
   const residenceTypeDropdownRef = useRef<DropdownMenuCheckboxesRef>(null)

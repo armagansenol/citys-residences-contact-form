@@ -2,20 +2,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useTranslations } from "next-intl"
 import { Control } from "react-hook-form"
-import { z } from "zod"
-
-const formSchema = z.object({
-  consent: z.boolean(),
-  consentElectronicMessage: z.boolean(),
-  consentSms: z.boolean(),
-  consentEmail: z.boolean(),
-  consentPhone: z.boolean(),
-})
-
-type FormValues = z.infer<typeof formSchema>
 
 interface ConsentCheckboxesProps {
-  control: Control<FormValues>
+  control: Control<any> // eslint-disable-line @typescript-eslint/no-explicit-any
   className?: string
 }
 
@@ -106,7 +95,7 @@ export function ConsentCheckboxes({ control, className }: ConsentCheckboxesProps
             <FormField
               key={name}
               control={control}
-              name={name as keyof FormValues}
+              name={name}
               render={({ field }) => (
                 <FormItem>
                   <div className="flex flex-row gap-3 space-y-0 group">
