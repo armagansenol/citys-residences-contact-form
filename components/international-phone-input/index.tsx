@@ -9,7 +9,7 @@ import { FormField } from "../ui/form"
 import { Input } from "../ui/input"
 
 export interface InternationalPhoneInputProps {
-  form: UseFormReturn<any>
+  form: UseFormReturn<any> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export function InternationalPhoneInputComponent({ form }: InternationalPhoneInputProps) {
