@@ -69,7 +69,7 @@
                     }
                 },
                 "consentElectronicMessage": {
-                    "placeholder": "<legal4>I consent</legal4> to receiving commercial electronic messages"
+                    "placeholder": "<legal4>I consent</legal4> to receiving commercial electronic messages."
                 },
                 "consentSms": {
                     "placeholder": "SMS"
