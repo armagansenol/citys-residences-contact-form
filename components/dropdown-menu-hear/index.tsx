@@ -2,7 +2,7 @@
 
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import cn from "clsx"
-import { ChevronDown } from "lucide-react"
+import { Check, ChevronDown } from "lucide-react"
 import { forwardRef, useImperativeHandle, useState } from "react"
 
 import {
@@ -41,7 +41,8 @@ export const DropdownMenuCheckboxesHear = forwardRef<DropdownMenuCheckboxesRef, 
     const [checkedStates, setCheckedStates] = useState<Record<string, Checked>>(() => defaultValues)
 
     const handleCheckedChange = (id: string, checked: Checked) => {
-      setCheckedStates((prev) => ({ ...prev, [id]: checked }))
+      const newCheckedStates = { ...checkedStates, [id]: checked }
+      setCheckedStates(newCheckedStates)
       onChange?.(id, checked as boolean)
     }
 
@@ -93,7 +94,7 @@ export const DropdownMenuCheckboxesHear = forwardRef<DropdownMenuCheckboxesRef, 
               onSelect={(event) => event.preventDefault()}
             >
               <div
-                className={`w-full flex items-center justify-start gap-2 px-1.5 py-1.5 rounded-sm transition-colors duration-200 cursor-pointer group
+                className={`w-full flex items-center justify-start gap-2 px-1.5 py-1.5 rounded-sm transition-all duration-200 cursor-pointer group
                       ${
                         checkedStates[option.id]
                           ? "border border-bricky-brick text-bricky-brick"
@@ -102,21 +103,13 @@ export const DropdownMenuCheckboxesHear = forwardRef<DropdownMenuCheckboxesRef, 
                 `}
               >
                 <div
-                  className={`h-3.5 w-3.5 rounded-sm relative transition-colors duration-200 overflow-hidden bg-transparent group-hover:bg-bricky-brick-light
-                     ${
-                       checkedStates[option.id]
-                         ? "opacity-100 bg-bricky-brick border border-bricky-brick-light"
-                         : "opacity-30 group-hover:opacity-30 transition-opacity duration-200 bg-bricky-brick border border-bricky-brick-light"
-                     } 
+                  className={`h-3.5 w-3.5 rounded-sm relative overflow-hidden transition-all duration-200 border border-bricky-brick-light group-hover:bg-bricky-brick
+                     ${checkedStates[option.id] ? "bg-bricky-brick " : "bg-transparent group-hover:opacity-30"} 
                   `}
                 >
-                  <div
-                    className={`absolute inset-0 bg-primary 
-                  ${checkedStates[option.id] ? "opacity-100" : "opacity-0"} 
-                  group-hover:opacity-50 transition-opacity duration-200`}
-                  />
+                  <Check className={`w-full h-full absolute top-0 left-0 text-white`} />
                 </div>
-                <span className="transition-colors duration-200">{option.label}</span>
+                <span>{option.label}</span>
               </div>
             </DropdownMenuCheckboxItem>
           ))}

@@ -2,7 +2,7 @@
 
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import cn from "clsx"
-import { ChevronDown } from "lucide-react"
+import { Check, ChevronDown } from "lucide-react"
 import { forwardRef, useImperativeHandle, useState } from "react"
 
 import {
@@ -105,21 +105,13 @@ export const DropdownMenuCheckboxesResidences = forwardRef<DropdownMenuCheckboxe
                 `}
               >
                 <div
-                  className={`h-3.5 w-3.5 rounded-sm relative transition-colors duration-200 overflow-hidden bg-transparent group-hover:bg-bricky-brick-light
-                     ${
-                       checkedStates[option.id]
-                         ? "opacity-100 bg-bricky-brick border border-bricky-brick-light"
-                         : "opacity-30 group-hover:opacity-30 transition-opacity duration-200 bg-bricky-brick border border-bricky-brick-light"
-                     } 
+                  className={`h-3.5 w-3.5 rounded-sm relative overflow-hidden transition-all duration-200 border border-bricky-brick-light group-hover:bg-bricky-brick
+                     ${checkedStates[option.id] ? "bg-bricky-brick " : "bg-transparent group-hover:opacity-30"} 
                   `}
                 >
-                  <div
-                    className={`absolute inset-0 bg-primary 
-                  ${checkedStates[option.id] ? "opacity-100" : "opacity-0"} 
-                  group-hover:opacity-50 transition-opacity duration-200`}
-                  />
+                  <Check className={`w-full h-full absolute top-0 left-0 text-white`} />
                 </div>
-                <span className="transition-colors duration-200 tracking-widest">{option.label}</span>
+                <span className="tracking-widest">{option.label}</span>
               </div>
             </DropdownMenuCheckboxItem>
           ))}

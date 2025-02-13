@@ -14,19 +14,19 @@
         "form": {
             "inputs": {
                 "name": {
-                    "placeholder": "Name*",
+                    "placeholder": "Name",
                     "errors": {
                         "required": "Required field"
                     }
                 },
                 "surname": {
-                    "placeholder": "Surname*",
+                    "placeholder": "Surname",
                     "errors": {
                         "required": "Required field"
                     }
                 },
                 "phone": {
-                    "placeholder": "Phone Number*",
+                    "placeholder": "Phone Number",
                     "errors": {
                         "required": "Required field",
                         "min": "Phone number must be at least 8 characters long",
@@ -34,20 +34,20 @@
                     }
                 },
                 "email": {
-                    "placeholder": "Email Address*",
+                    "placeholder": "Email Address",
                     "errors": {
                         "required": "Required field",
                         "email": "Please enter a valid email address"
                     }
                 },
                 "residenceType": {
-                    "placeholder": "Preferred Residence Type*",
+                    "placeholder": "Preferred Residence Type",
                     "errors": {
                         "required": "Required field"
                     }
                 },
                 "howDidYouHearAboutUs": {
-                    "placeholder": "How did you hear about us?*",
+                    "placeholder": "How did you hear about us?",
                     "errors": {
                         "required": "Required field"
                     },
@@ -63,13 +63,13 @@
                     "placeholder": "Message"
                 },
                 "consent": {
-                    "placeholder": "I have read the <Clarification>Clarification Text</Clarification> regarding the personal data I will share within the scope of the Contact Us application, and I have read and accept the <ExplicitConsent>Explicit Consent Text</ExplicitConsent> regarding the personal data I will share within the scope of the clarification text.",
+                    "placeholder": "I have read and accept the <legal1>Personal Data Protection Disclosure Text</legal1>, <legal2>Explicit Consent Text</legal2>, and <legal3>Commercial Electronic Message Disclosure Text</legal3> regarding the personal data I will share within the scope of the citysresidences.com application.",
                     "errors": {
                         "required": "Required field"
                     }
                 },
                 "consentElectronicMessage": {
-                    "placeholder": "I consent to receiving commercial electronic messages"
+                    "placeholder": "<legal4>I consent</legal4> to receiving commercial electronic messages"
                 },
                 "consentSms": {
                     "placeholder": "SMS"

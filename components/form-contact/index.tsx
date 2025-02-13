@@ -19,6 +19,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { FormTranslations } from "@/types"
+import { getUtmParameter } from "@/lib/utils"
 
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
@@ -77,8 +78,8 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
             onChange={(e) => {
               const value = e.target.value
               if (name === "phone") {
-                // Allow only numbers and '+' sign
-                const formattedValue = value.replace(/[^\d+]/g, "")
+                // Allow only numbers and '+' sign, and limit to 15 characters
+                const formattedValue = value.replace(/[^\d+]/g, "").slice(0, 15)
                 field.onChange(formattedValue)
               } else if (name === "name" || name === "surname") {
                 // Allow only letters
@@ -204,15 +205,6 @@ export function ContactForm({ translations }: FormContactProps) {
   const residenceTypeValue = form.watch("residenceType")
   const howDidYouHearAboutUsValue = form.watch("howDidYouHearAboutUs")
 
-  // Generic function to get any UTM parameter
-  const getUtmParameter = (param: string) => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search)
-      return urlParams.get(param) || ""
-    }
-    return ""
-  }
-
   const mutation = useMutation({
     mutationFn: async (data: FormValues) => {
       try {
@@ -238,11 +230,16 @@ export function ContactForm({ translations }: FormContactProps) {
           body: formData,
         })
 
-        const result = await response.json()
+        const result: { success: boolean; message: string } = await response.json()
 
         if (!response.ok) {
           showMessage("error", result.message || "Failed to submit form")
           throw new Error(result.message || "Failed to submit form")
+        }
+
+        if (!result.success) {
+          showMessage("error", result.message)
+          throw new Error(result.message)
         }
 
         showMessage("success", result.message)
@@ -253,19 +250,9 @@ export function ContactForm({ translations }: FormContactProps) {
       }
     },
     onSuccess: () => {
+      resetDropdowns()
       form.reset()
       form.clearErrors()
-      form.setValue("residenceType", "", {
-        shouldValidate: true,
-        shouldDirty: false,
-        shouldTouch: false,
-      })
-      form.setValue("howDidYouHearAboutUs", "", {
-        shouldValidate: true,
-        shouldDirty: false,
-        shouldTouch: false,
-      })
-      resetDropdowns()
     },
     onError: () => {
       // Clear error message after 5 seconds
@@ -284,27 +271,34 @@ export function ContactForm({ translations }: FormContactProps) {
   }, [form.formState, lenis])
 
   useEffect(() => {
-    if (consentElectronicMessageValue && (!consentSmsValue || !consentEmailValue || !consentPhoneValue)) {
-      form.setValue("consentSms", true)
-      form.setValue("consentEmail", true)
-      form.setValue("consentPhone", true)
-      return
+    // If consentElectronicMessage is unchecked, uncheck all other consents
+    if (!consentElectronicMessageValue) {
+      form.setValue("consentSms", false)
+      form.setValue("consentEmail", false)
+      form.setValue("consentPhone", false)
     }
-
-    form.setValue("consentSms", false)
-    form.setValue("consentEmail", false)
-    form.setValue("consentPhone", false)
   }, [consentElectronicMessageValue])
 
   useEffect(() => {
-    if (!consentSmsValue && !consentEmailValue && !consentPhoneValue && consentElectronicMessageValue) {
-      form.setValue("consentElectronicMessage", false)
-    }
-
+    // If any individual consent is checked, ensure consentElectronicMessage is checked
     if (consentSmsValue || consentEmailValue || consentPhoneValue) {
       form.setValue("consentElectronicMessage", true)
+    } else {
+      // If all individual consents are unchecked, uncheck consentElectronicMessage
+      form.setValue("consentElectronicMessage", false)
     }
   }, [consentSmsValue, consentEmailValue, consentPhoneValue])
+
+  // Add this new effect to handle the first-time check of consentElectronicMessage
+  useEffect(() => {
+    const isFirstCheck = consentElectronicMessageValue && !consentSmsValue && !consentEmailValue && !consentPhoneValue
+
+    if (isFirstCheck) {
+      form.setValue("consentSms", true)
+      form.setValue("consentEmail", true)
+      form.setValue("consentPhone", true)
+    }
+  }, [consentElectronicMessageValue])
 
   const residenceTypeOptions = [
     { id: "1+1", label: "1+1" },
@@ -325,12 +319,18 @@ export function ContactForm({ translations }: FormContactProps) {
 
   const handleResidenceType = useCallback(
     (id: string, checked: boolean) => {
+      const option = residenceTypeOptions.find((opt) => opt.id === id)
+      if (!option) return
+
       const currentValue = form.getValues("residenceType") || ""
-      const currentIds = currentValue ? currentValue.split(",") : []
-      const newIds = checked ? [...currentIds, id].filter(Boolean) : currentIds.filter((val) => val !== id)
-      form.setValue("residenceType", newIds.join(","))
+      const currentLabels = currentValue ? currentValue.split(",") : []
+      const newLabels = checked
+        ? [...currentLabels, option.label].filter(Boolean)
+        : currentLabels.filter((label) => label !== option.label)
+
+      form.setValue("residenceType", newLabels.join(","))
     },
-    [form]
+    [form, residenceTypeOptions]
   )
 
   const handleHowDidYouHearAboutUs = useCallback(
@@ -344,7 +344,9 @@ export function ContactForm({ translations }: FormContactProps) {
         ? [...currentLabels, option.label].filter(Boolean)
         : currentLabels.filter((label) => label !== option.label)
 
-      form.setValue("howDidYouHearAboutUs", newLabels.join(","))
+      form.setValue("howDidYouHearAboutUs", newLabels.join(","), {
+        shouldValidate: newLabels.length > 0,
+      })
     },
     [form, howDidYouHearAboutUsOptions]
   )
@@ -353,8 +355,12 @@ export function ContactForm({ translations }: FormContactProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="font-halenoir space-y-6 lg:space-y-6">
         <div className="flex flex-col lg:grid grid-flow-col gap-6 lg:gap-4 md:grid-cols-2">
-          <FormInput control={form.control} name="name" placeholder={translations.inputs.name.placeholder} />
-          <FormInput control={form.control} name="surname" placeholder={translations.inputs.surname.placeholder} />
+          <FormInput control={form.control} name="name" placeholder={`${translations.inputs.name.placeholder}*`} />
+          <FormInput
+            control={form.control}
+            name="surname"
+            placeholder={`${translations.inputs.surname.placeholder}*`}
+          />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4">
           <FormField
@@ -363,7 +369,7 @@ export function ContactForm({ translations }: FormContactProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
-                  {translations.inputs.phone.placeholder}
+                  {`${translations.inputs.phone.placeholder}*`}
                 </FormLabel>
                 <FormControl>
                   <PhoneInput
@@ -371,10 +377,20 @@ export function ContactForm({ translations }: FormContactProps) {
                     type="tel"
                     placeholder={translations.inputs.phone.placeholder}
                     defaultCountry="TR"
-                    international
-                    minLength={8}
-                    min={8}
+                    international={false}
+                    initialValueFormat="national"
+                    // value={field.value}
                     {...field}
+                    // onChange={(value) => {
+                    //   console.log("PhoneInput onChange triggered with value:", value)
+                    //   if (value) {
+                    //     const formattedValue = value.replace(/[^\d+]/g, "").slice(0, 12)
+                    //     console.log("Formatted value:", formattedValue)
+                    //     field.onChange(formattedValue)
+                    //   }
+                    // }}
+
+                    limitMaxLength={true}
                   />
                 </FormControl>
                 <FormMessage />
@@ -384,30 +400,53 @@ export function ContactForm({ translations }: FormContactProps) {
           <FormInput
             control={form.control}
             name="email"
-            placeholder={translations.inputs.email.placeholder}
+            type="email"
+            placeholder={`${translations.inputs.email.placeholder}*`}
             className="col-span-1 md:col-span-1"
           />
         </div>
         <div className="flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4">
           <div className="space-y-1">
-            <DropdownMenuCheckboxesResidences
-              placeholder={translations.inputs.residenceType.placeholder}
-              selectedItems={residenceTypeValue !== "" ? residenceTypeValue.split(",") : []}
-              options={residenceTypeOptions}
-              onChange={handleResidenceType}
-              ref={residenceTypeDropdownRef}
+            <FormField
+              control={form.control}
+              name="residenceType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <DropdownMenuCheckboxesResidences
+                      {...field}
+                      placeholder={`${translations.inputs.residenceType.placeholder}*`}
+                      selectedItems={residenceTypeValue !== "" ? residenceTypeValue.split(",") : []}
+                      options={residenceTypeOptions}
+                      onChange={handleResidenceType}
+                      ref={residenceTypeDropdownRef}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <FormMessage>{form.formState.errors.residenceType?.message}</FormMessage>
           </div>
           <div className="space-y-1">
-            <DropdownMenuCheckboxesHear
-              placeholder={translations.inputs.howDidYouHearAboutUs.placeholder}
-              selectedItems={howDidYouHearAboutUsValue !== "" ? howDidYouHearAboutUsValue.split(",") : []}
-              options={howDidYouHearAboutUsOptions}
-              onChange={handleHowDidYouHearAboutUs}
-              ref={howDidYouHearAboutUsDropdownRef}
+            <FormField
+              control={form.control}
+              name="howDidYouHearAboutUs"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <DropdownMenuCheckboxesHear
+                      {...field}
+                      placeholder={`${translations.inputs.howDidYouHearAboutUs.placeholder}*`}
+                      selectedItems={howDidYouHearAboutUsValue !== "" ? howDidYouHearAboutUsValue.split(",") : []}
+                      options={howDidYouHearAboutUsOptions}
+                      onChange={handleHowDidYouHearAboutUs}
+                      ref={howDidYouHearAboutUsDropdownRef}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <FormMessage>{form.formState.errors.howDidYouHearAboutUs?.message}</FormMessage>
           </div>
         </div>
         <div className="grid grid-flow-col">
@@ -430,7 +469,7 @@ export function ContactForm({ translations }: FormContactProps) {
             )}
           />
         </div>
-        <div>
+        <div className="space-y-5">
           <FormField
             control={form.control}
             name="consent"
@@ -440,54 +479,34 @@ export function ContactForm({ translations }: FormContactProps) {
                   <FormControl>
                     <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
-                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
+                  <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
                     {t.rich("contact.form.inputs.consent.placeholder", {
-                      Clarification: (chunks) => (
+                      legal1: (chunks) => (
                         <a
                           target="_blank"
                           rel="norefferer noopener"
-                          href="/pdf/kvkk-aydinlatma-metni.pdf"
-                          className="text-neutral-950 underline"
+                          href="/pdf/citys-residences-kvkk-aydinlatma-metni.pdf"
+                          className="text-neutral-950 underline font-medium"
                         >
                           {chunks}
                         </a>
                       ),
-                      ExplicitConsent: (chunks) => (
+                      legal2: (chunks) => (
                         <a
                           target="_blank"
                           rel="norefferer noopener"
-                          href="/pdf/acik-riza-metni.pdf"
-                          className="text-neutral-950 underline"
+                          href="/pdf/citys-residences-acik-riza-metni.pdf"
+                          className="text-neutral-950 underline font-medium"
                         >
                           {chunks}
                         </a>
                       ),
-                    })}
-                  </FormLabel>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div>
-          <FormField
-            control={form.control}
-            name="consentElectronicMessage"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-row gap-3 space-y-0 group">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
-                    {t.rich("contact.form.inputs.consentElectronicMessage.placeholder", {
-                      Clarification: (chunks) => (
+                      legal3: (chunks) => (
                         <a
                           target="_blank"
                           rel="norefferer noopener"
-                          href="/pdf/kvkk-aydinlatma-metni.pdf"
-                          className="text-neutral-950 underline"
+                          href="/pdf/citys-residences-ticari-elektronik-ileti-aydinlatma-metni.pdf"
+                          className="text-neutral-950 underline font-medium"
                         >
                           {chunks}
                         </a>
@@ -499,97 +518,124 @@ export function ContactForm({ translations }: FormContactProps) {
               </FormItem>
             )}
           />
+          <div className="space-y-3">
+            <FormField
+              control={form.control}
+              name="consentElectronicMessage"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-row gap-3 space-y-0 group">
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
+                      {t.rich("contact.form.inputs.consentElectronicMessage.placeholder", {
+                        legal4: (chunks) => (
+                          <a
+                            target="_blank"
+                            rel="norefferer noopener"
+                            href="/pdf/citys-residences-acik-riza-beyani.pdf"
+                            className="text-neutral-950 underline font-medium"
+                          >
+                            {chunks}
+                          </a>
+                        ),
+                      })}
+                    </FormLabel>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="space-y-2">
+              <FormField
+                control={form.control}
+                name="consentSms"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-row gap-3 space-y-0 group">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
+                        {t.rich("contact.form.inputs.consentSms.placeholder", {
+                          Clarification: (chunks) => (
+                            <a
+                              target="_blank"
+                              rel="norefferer noopener"
+                              href="/pdf/kvkk-aydinlatma-metni.pdf"
+                              className="text-neutral-950 underline"
+                            >
+                              {chunks}
+                            </a>
+                          ),
+                        })}
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="consentEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-row gap-3 space-y-0 group">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
+                        {t.rich("contact.form.inputs.consentEmail.placeholder", {
+                          Clarification: (chunks) => (
+                            <a
+                              target="_blank"
+                              rel="norefferer noopener"
+                              href="/pdf/kvkk-aydinlatma-metni.pdf"
+                              className="text-neutral-950 underline"
+                            >
+                              {chunks}
+                            </a>
+                          ),
+                        })}
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="consentPhone"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-row gap-3 space-y-0 group">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
+                        {t.rich("contact.form.inputs.consentPhone.placeholder", {
+                          Clarification: (chunks) => (
+                            <a
+                              target="_blank"
+                              rel="norefferer noopener"
+                              href="/pdf/kvkk-aydinlatma-metni.pdf"
+                              className="text-neutral-950 underline"
+                            >
+                              {chunks}
+                            </a>
+                          ),
+                        })}
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
         </div>
-        <div>
-          <FormField
-            control={form.control}
-            name="consentSms"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-row gap-3 space-y-0 group">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
-                    {t.rich("contact.form.inputs.consentSms.placeholder", {
-                      Clarification: (chunks) => (
-                        <a
-                          target="_blank"
-                          rel="norefferer noopener"
-                          href="/pdf/kvkk-aydinlatma-metni.pdf"
-                          className="text-neutral-950 underline"
-                        >
-                          {chunks}
-                        </a>
-                      ),
-                    })}
-                  </FormLabel>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div>
-          <FormField
-            control={form.control}
-            name="consentEmail"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-row gap-3 space-y-0 group">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
-                    {t.rich("contact.form.inputs.consentEmail.placeholder", {
-                      Clarification: (chunks) => (
-                        <a
-                          target="_blank"
-                          rel="norefferer noopener"
-                          href="/pdf/kvkk-aydinlatma-metni.pdf"
-                          className="text-neutral-950 underline"
-                        >
-                          {chunks}
-                        </a>
-                      ),
-                    })}
-                  </FormLabel>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div>
-          <FormField
-            control={form.control}
-            name="consentPhone"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-row gap-3 space-y-0 group">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel className="text-[0.8rem] text-neutral-950 font-light leading-snug cursor-pointer max-w-[90%]">
-                    {t.rich("contact.form.inputs.consentPhone.placeholder", {
-                      Clarification: (chunks) => (
-                        <a
-                          target="_blank"
-                          rel="norefferer noopener"
-                          href="/pdf/kvkk-aydinlatma-metni.pdf"
-                          className="text-neutral-950 underline"
-                        >
-                          {chunks}
-                        </a>
-                      ),
-                    })}
-                  </FormLabel>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+
         <button type="submit" disabled={mutation.isPending} className="flex relative">
           <AnimatedButton text={translations.submit.default} />
           {mutation.isPending && (

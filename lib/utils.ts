@@ -10,3 +10,11 @@ export const breakpoints = {
   tablet: 1024,
   widescreen: 1700,
 }
+
+export const getUtmParameter = (param: string) => {
+  if (typeof window !== "undefined") {
+    const urlParams = new URLSearchParams(window.location.search)
+    return urlParams.get(param) || ""
+  }
+  return ""
+}

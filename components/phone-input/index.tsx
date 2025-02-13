@@ -68,7 +68,8 @@ const CountrySelect = ({ disabled, value: selectedCountry, options: countryList,
           disabled={disabled}
         >
           {/* <FlagComponent country={selectedCountry} countryName={selectedCountry} /> */}
-          {selectedCountry?.toUpperCase() ?? "TR"}
+          {/* {selectedCountry?.toUpperCase() ?? "TR"} */}
+          {RPNInput.getCountryCallingCode(selectedCountry)}
           <ChevronsUpDown className={cn("-mr-1 size-3 opacity-50", disabled ? "hidden" : "opacity-100")} />
         </button>
       </PopoverTrigger>

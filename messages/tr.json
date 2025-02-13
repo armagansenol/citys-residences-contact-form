@@ -14,19 +14,19 @@
         "form": {
             "inputs": {
                 "name": {
-                    "placeholder": "Adınız*",
+                    "placeholder": "Adınız",
                     "errors": {
                         "required": "Zorunlu alan"
                     }
                 },
                 "surname": {
-                    "placeholder": "Soyadınız*",
+                    "placeholder": "Soyadınız",
                     "errors": {
                         "required": "Zorunlu alan"
                     }
                 },
                 "phone": {
-                    "placeholder": "Telefon Numaranız*",
+                    "placeholder": "Telefon Numaranız",
                     "errors": {
                         "required": "Zorunlu alan",
                         "min": "Telefon numarası en az 8 karakter olmalıdır",
@@ -34,20 +34,20 @@
                     }
                 },
                 "email": {
-                    "placeholder": "E-Posta Adresiniz*",
+                    "placeholder": "E-Posta Adresiniz",
                     "errors": {
                         "required": "Zorunlu alan",
                         "email": "Lütfen geçerli bir e-posta adresi giriniz"
                     }
                 },
                 "residenceType": {
-                    "placeholder": "Tercih Edilen Konut Türü*",
+                    "placeholder": "Tercih Edilen Konut Türü",
                     "errors": {
                         "required": "Zorunlu alan"
                     }
                 },
                 "howDidYouHearAboutUs": {
-                    "placeholder": "Bizi nereden duydunuz?*",
+                    "placeholder": "Bizi nereden duydunuz?",
                     "errors": {
                         "required": "Zorunlu alan"
                     },
@@ -63,13 +63,13 @@
                     "placeholder": "Mesajınız"
                 },
                 "consent": {
-                    "placeholder": "Bize Ulaşın uygulaması kapsamında paylaşacağım kişisel verilere ilişkin <Clarification>Aydınlatma Metni</Clarification>'ni okudum ve aydınlatma metni kapsamında paylaşacağım kişisel verilere ilişkin <ExplicitConsent>Açık Rıza Metni</ExplicitConsent>'ni okudum, kabul ediyorum.",
+                    "placeholder": "citysresidences.com uygulaması kapsamında paylaşacağım kişisel verilere ilişkin <legal1>Kişisel Verilerin Korunmasına İlişkin Aydınlatma Metni</legal1>’ni, <legal2>Açık Rıza Metni</legal2>’ni, <legal3>Ticari Elektronik İleti Aydınlatma Metni</legal3>’ni okudum, kabul ediyorum.",
                     "errors": {
                         "required": "Zorunlu alan"
                     }
                 },
                 "consentElectronicMessage": {
-                    "placeholder": "Tarafıma ticari elektronik ileti gönderilmesine açık rızam var"
+                    "placeholder": "Tarafıma ticari elektronik ileti gönderilmesine <legal4>açık rızam var</legal4>."
                 },
                 "consentSms": {
                     "placeholder": "Sms"
