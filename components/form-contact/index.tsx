@@ -351,7 +351,12 @@ export function ContactForm({ translations }: FormContactProps) {
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4">
-          <InternationalPhoneInputComponent form={form} />
+          <div className="col-span-1 flex flex-col gap-1">
+            <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm" htmlFor="phone">
+              {`${locale === "tr" ? "Telefon Numarası" : "Phone Number"}*`}
+            </FormLabel>
+            <InternationalPhoneInputComponent form={form} />
+          </div>
           <div className="col-span-1">
             <FormInput
               control={form.control}
@@ -362,7 +367,6 @@ export function ContactForm({ translations }: FormContactProps) {
             />
           </div>
         </div>
-
         <div className="flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4">
           <div className="space-y-1">
             <FormField

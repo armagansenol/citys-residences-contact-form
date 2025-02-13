@@ -1,6 +1,7 @@
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useEffect } from "react"
 import { UseFormReturn } from "react-hook-form"
 import { defaultCountries, usePhoneInput } from "react-international-phone"
 
@@ -23,13 +24,17 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
     },
   })
 
+  useEffect(() => {
+    form.setValue("countryCode", country.dialCode, { shouldValidate: true })
+  }, [])
+
   return (
-    <div className="grid grid-cols-12 gap-2 items-start col-span-1">
+    <div className="flex gap-2 col-span-1">
       <FormField
         control={form.control}
         name="countryCode"
         render={({ field }) => (
-          <FormItem className="col-span-3">
+          <FormItem className="w-20">
             <FormControl>
               <Select
                 onValueChange={(value) => {
@@ -69,9 +74,10 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
         name="phone"
         control={form.control}
         render={() => (
-          <FormItem className="col-span-9">
+          <FormItem className="flex-1">
             <FormControl>
               <Input
+                id="phone"
                 className="h-10 border border-bricky-brick-light rounded-md"
                 placeholder={"Telefon Numarası"}
                 name="phone"
