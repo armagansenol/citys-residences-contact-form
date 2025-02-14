@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import { CheckCircle2 } from "lucide-react"
 import { useLocale } from "next-intl"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Control, useForm } from "react-hook-form"
@@ -12,7 +11,7 @@ import { AnimatedButton } from "@/components/animated-button"
 import { ConsentCheckboxes } from "@/components/consent-checkboxes"
 import { DropdownMenuCheckboxesHear } from "@/components/dropdown-menu-hear"
 import { DropdownMenuCheckboxesRef, DropdownMenuCheckboxesResidences } from "@/components/dropdown-menu-residences"
-import { IconLoading } from "@/components/icons"
+import { IconCheck, IconLoading } from "@/components/icons"
 import { InternationalPhoneInputComponent } from "@/components/international-phone-input"
 import {
   Dialog,
@@ -416,7 +415,9 @@ export function ContactForm({ translations }: FormContactProps) {
         <DialogContent className="font-halenoir flex flex-col items-center justify-center py-8">
           <DialogHeader>
             <DialogTitle className="text-neutral-950 font-medium leading-none text-base lg:text-2xl flex flex-col items-center gap-2 text-center mb-2">
-              <CheckCircle2 className="w-10 h-10 text-green-500" />
+              <div className="w-9 h-9 flex items-center justify-center">
+                <IconCheck />
+              </div>
               {translations.messages.successDialog.title}
             </DialogTitle>
             <DialogDescription className="text-neutral-950 font-normal leading-none block text-sm lg:text-base text-center pb-10">
