@@ -1,4 +1,3 @@
-import { initialScroll } from "@/lib/constants"
 import cn from "clsx"
 import type { LinkProps as NextLinkProps } from "next/link"
 import NextLink from "next/link"
@@ -17,7 +16,7 @@ type LinkProps = Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof NextL
   }
 
 const Link: React.ForwardRefRenderFunction<HTMLAnchorElement, LinkProps> = (
-  { href, children, className, scroll = initialScroll, ariaLabel = "go to page", ...props },
+  { href, children, className, scroll, ariaLabel = "go to page", ...props },
   ref
 ) => {
   const isProtocol = useMemo(
