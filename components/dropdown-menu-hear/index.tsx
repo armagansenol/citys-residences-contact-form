@@ -92,7 +92,7 @@ export const DropdownMenuCheckboxesHear = forwardRef<DropdownMenuCheckboxesRef, 
               onSelect={(event) => event.preventDefault()}
             >
               <div
-                className={`w-full flex items-center justify-start gap-2 px-1.5 py-1.5 rounded-sm transition-all duration-200 cursor-pointer group
+                className={`w-full flex items-center justify-start gap-2 px-1.5 py-2.5 rounded-sm transition-all duration-200 cursor-pointer group
                       ${selectedItems?.includes(option.label) ? SELECTED_ITEM_STYLES : UNSELECTED_ITEM_STYLES}`}
               >
                 <div

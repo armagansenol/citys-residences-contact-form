@@ -90,7 +90,7 @@ export const DropdownMenuCheckboxesResidences = forwardRef<DropdownMenuCheckboxe
               onSelect={(event) => event.preventDefault()}
             >
               <div
-                className={`w-16 flex items-center justify-center gap-2 py-1 rounded-sm transition-colors duration-200 cursor-pointer group
+                className={`w-16 flex items-center justify-center gap-2 py-2.5 rounded-sm transition-colors duration-200 cursor-pointer group
                       ${
                         selectedItems?.includes(option.label)
                           ? "border border-bricky-brick text-bricky-brick"
