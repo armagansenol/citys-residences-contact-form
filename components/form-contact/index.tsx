@@ -28,13 +28,24 @@ import { Textarea } from "@/components/ui/textarea"
 import { submitContactForm } from "@/lib/api/submit-contact-form"
 import { isPhoneValid } from "@/lib/utils"
 import { FormTranslations } from "@/types"
-
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
     name: z.string().min(1, { message: translations.inputs.name.errors.required }),
     surname: z.string().min(1, { message: translations.inputs.surname.errors.required }),
     countryCode: z.string(),
-    phone: z.string().refine(isPhoneValid, { message: translations.inputs.phone.errors.required }),
+    phone: z.string().refine(
+      (val) => {
+        // const selectedCountryCode = defaultCountries.find((country) => `+${parseCountry(country).dialCode}` === val)
+
+        // const parsedCountryCode = selectedCountryCode && parseCountry(selectedCountryCode)
+
+        // if (val === `+${parsedCountryCode?.dialCode}`) return true
+
+        return isPhoneValid(val)
+      },
+      { message: translations.inputs.phone.errors.required }
+    ),
+
     email: z
       .string()
       .min(1, { message: translations.inputs.email.errors.required })
@@ -152,7 +163,8 @@ export function ContactForm({ translations }: FormContactProps) {
       consentEmail: false,
       consentPhone: false,
     },
-    mode: "all",
+    mode: "onSubmit",
+    reValidateMode: "onChange",
   })
 
   const residenceTypeValue = form.watch("residenceType")
@@ -227,7 +239,11 @@ export function ContactForm({ translations }: FormContactProps) {
         ? [...currentLabels, option.label].filter(Boolean)
         : currentLabels.filter((label) => label !== option.label)
 
-      form.setValue("residenceType", newLabels.join(","))
+      form.setValue("residenceType", newLabels.join(","), {
+        shouldValidate: false,
+      })
+
+      form.trigger("residenceType")
     },
     [form, residenceTypeOptions]
   )
@@ -243,14 +259,25 @@ export function ContactForm({ translations }: FormContactProps) {
         ? [...currentLabels, option.label].filter(Boolean)
         : currentLabels.filter((label) => label !== option.label)
 
-      form.setValue("howDidYouHearAboutUs", newLabels.join(","))
+      form.setValue("howDidYouHearAboutUs", newLabels.join(","), {
+        shouldValidate: false,
+      })
+
+      form.trigger("howDidYouHearAboutUs")
     },
     [form, howDidYouHearAboutUsOptions]
   )
 
   useEffect(() => {
-    console.log(form.formState.errors)
-  }, [form.formState.errors])
+    console.log("form errors", form.formState.errors)
+    console.log("form values", form.getValues())
+  }, [form.formState.errors, form])
+
+  useEffect(() => {
+    form.register("phone", {
+      onChange: () => form.trigger("phone"), // Validate phone on change
+    })
+  }, [form])
 
   return (
     <>
@@ -293,15 +320,16 @@ export function ContactForm({ translations }: FormContactProps) {
               <FormField
                 control={form.control}
                 name="residenceType"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormControl>
                       <DropdownMenuCheckboxesResidences
-                        {...field}
                         placeholder={`${translations.inputs.residenceType.placeholder}*`}
                         selectedItems={residenceTypeValue !== "" ? residenceTypeValue.split(",") : []}
                         options={residenceTypeOptions}
-                        onChange={handleResidenceType}
+                        onChange={(id, checked) => {
+                          handleResidenceType(id, checked)
+                        }}
                         ref={residenceTypeDropdownRef}
                       />
                     </FormControl>
@@ -314,15 +342,16 @@ export function ContactForm({ translations }: FormContactProps) {
               <FormField
                 control={form.control}
                 name="howDidYouHearAboutUs"
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormControl>
                       <DropdownMenuCheckboxesHear
-                        {...field}
                         placeholder={`${translations.inputs.howDidYouHearAboutUs.placeholder}*`}
                         selectedItems={howDidYouHearAboutUsValue !== "" ? howDidYouHearAboutUsValue.split(",") : []}
                         options={howDidYouHearAboutUsOptions}
-                        onChange={handleHowDidYouHearAboutUs}
+                        onChange={(id, checked) => {
+                          handleHowDidYouHearAboutUs(id, checked)
+                        }}
                         ref={howDidYouHearAboutUsDropdownRef}
                       />
                     </FormControl>

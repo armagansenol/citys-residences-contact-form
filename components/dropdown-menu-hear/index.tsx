@@ -3,7 +3,7 @@
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
 import cn from "clsx"
 import { Check, ChevronDown } from "lucide-react"
-import { forwardRef, useImperativeHandle, useState } from "react"
+import { forwardRef, useImperativeHandle } from "react"
 
 import {
   DropdownMenu,
@@ -27,7 +27,6 @@ interface DropdownMenuCheckboxesProps {
   defaultValues?: Record<string, boolean>
   onChange?: (id: string, checked: boolean) => void
   className?: string
-  triggerVariant?: "default" | "outline" | "secondary" | "ghost" | "link"
 }
 
 // Add ref interface
@@ -35,25 +34,23 @@ export interface DropdownMenuCheckboxesRef {
   reset: () => void
 }
 
+// Constants for repeated styles
+const SELECTED_ITEM_STYLES = "border border-bricky-brick text-bricky-brick"
+const UNSELECTED_ITEM_STYLES = "border border-neutral-200 text-neutral-950"
+const CHECKBOX_SELECTED_STYLES = "bg-bricky-brick"
+const CHECKBOX_UNSELECTED_STYLES = "bg-transparent group-hover:opacity-30"
+
 // Convert to forwardRef
 export const DropdownMenuCheckboxesHear = forwardRef<DropdownMenuCheckboxesRef, DropdownMenuCheckboxesProps>(
-  ({ placeholder, selectedItems, options, defaultValues = {}, onChange, className }, ref) => {
-    const [checkedStates, setCheckedStates] = useState<Record<string, Checked>>(() => defaultValues)
-
+  ({ placeholder, selectedItems = [], options, defaultValues = {}, onChange, className }, ref) => {
     const handleCheckedChange = (id: string, checked: Checked) => {
-      const newCheckedStates = { ...checkedStates, [id]: checked }
-      setCheckedStates(newCheckedStates)
       onChange?.(id, checked as boolean)
     }
 
-    // Add reset function and expose via ref
     useImperativeHandle(ref, () => ({
       reset: () => {
-        setCheckedStates(defaultValues)
-        Object.keys(checkedStates).forEach((id) => {
-          if (checkedStates[id] !== defaultValues[id]) {
-            onChange?.(id, defaultValues[id] ?? false)
-          }
+        Object.keys(defaultValues).forEach((id) => {
+          onChange?.(id, defaultValues[id] ?? false)
         })
       },
     }))
@@ -64,12 +61,13 @@ export const DropdownMenuCheckboxesHear = forwardRef<DropdownMenuCheckboxesRef, 
           <button
             className="h-10 w-full border border-bricky-brick-light flex items-center justify-between px-2 lg:px-4 rounded-md text-base md:text-sm outline-none focus:outline-none focus:ring-0"
             type="button"
+            aria-label={`Select ${placeholder}`}
           >
             <>
-              {selectedItems && selectedItems?.length > 0 ? (
+              {selectedItems.length > 0 ? (
                 <span className="w-full relative overflow-hidden gradient-white-to-transparent">
                   <span className="flex gap-1">
-                    {selectedItems?.map((item, index) => (
+                    {selectedItems.map((item, index) => (
                       <span key={index} className="bg-bricky-brick px-2 py-0.5 rounded-sm text-white whitespace-nowrap">
                         {item}
                       </span>
@@ -88,26 +86,20 @@ export const DropdownMenuCheckboxesHear = forwardRef<DropdownMenuCheckboxesRef, 
             <DropdownMenuCheckboxItem
               className="w-full cursor-pointer"
               key={option.id}
-              checked={checkedStates[option.id] ?? false}
+              checked={selectedItems?.includes(option.label)}
               onCheckedChange={(checked) => handleCheckedChange(option.id, checked)}
               disabled={option.disabled}
               onSelect={(event) => event.preventDefault()}
             >
               <div
                 className={`w-full flex items-center justify-start gap-2 px-1.5 py-1.5 rounded-sm transition-all duration-200 cursor-pointer group
-                      ${
-                        checkedStates[option.id]
-                          ? "border border-bricky-brick text-bricky-brick"
-                          : "border border-neutral-200 text-neutral-950"
-                      } 
-                `}
+                      ${selectedItems?.includes(option.label) ? SELECTED_ITEM_STYLES : UNSELECTED_ITEM_STYLES}`}
               >
                 <div
                   className={`h-3.5 w-3.5 rounded-sm relative overflow-hidden transition-all duration-200 border border-bricky-brick-light group-hover:bg-bricky-brick
-                     ${checkedStates[option.id] ? "bg-bricky-brick " : "bg-transparent group-hover:opacity-30"} 
-                  `}
+                     ${selectedItems?.includes(option.label) ? CHECKBOX_SELECTED_STYLES : CHECKBOX_UNSELECTED_STYLES}`}
                 >
-                  <Check className={`w-full h-full absolute top-0 left-0 text-white`} />
+                  <Check className="w-full h-full absolute top-0 left-0 text-white" />
                 </div>
                 <span>{option.label}</span>
               </div>
