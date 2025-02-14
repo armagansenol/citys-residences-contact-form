@@ -79,6 +79,11 @@ export default function Contact() {
     messages: {
       error: t("form.messages.error"),
       success: t("form.messages.success"),
+      successDialog: {
+        title: t("form.messages.successDialog.title"),
+        description: t("form.messages.successDialog.description"),
+        button: t("form.messages.successDialog.button"),
+      },
     },
   }
 

@@ -2,8 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
-import { useLenis } from "lenis/react"
-import { AnimatePresence, motion } from "motion/react"
+import { CheckCircle2 } from "lucide-react"
 import { useLocale } from "next-intl"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Control, useForm } from "react-hook-form"
@@ -15,20 +14,27 @@ import { DropdownMenuCheckboxesHear } from "@/components/dropdown-menu-hear"
 import { DropdownMenuCheckboxesRef, DropdownMenuCheckboxesResidences } from "@/components/dropdown-menu-residences"
 import { IconLoading } from "@/components/icons"
 import { InternationalPhoneInputComponent } from "@/components/international-phone-input"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { getUtmParameter, isPhoneValid } from "@/lib/utils"
+import { submitContactForm } from "@/lib/api/submit-contact-form"
+import { isPhoneValid } from "@/lib/utils"
 import { FormTranslations } from "@/types"
 
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
     name: z.string().min(1, { message: translations.inputs.name.errors.required }),
     surname: z.string().min(1, { message: translations.inputs.surname.errors.required }),
-    countryCode: z.string().min(1, { message: "Country code is required" }),
+    countryCode: z.string(),
     phone: z.string().refine(isPhoneValid, { message: translations.inputs.phone.errors.required }),
-    // .min(12, { message: translations.inputs.phone.errors.min })
-    // .max(15, { message: translations.inputs.phone.errors.max })
     email: z
       .string()
       .min(1, { message: translations.inputs.email.errors.required })
@@ -43,7 +49,7 @@ const getFormSchema = (translations: FormTranslations) =>
     consentPhone: z.boolean(),
   })
 
-type FormValues = z.infer<ReturnType<typeof getFormSchema>>
+export type FormValues = z.infer<ReturnType<typeof getFormSchema>>
 
 const commonInputStyles =
   "bg-transparent border-b border-bricky-brick rounded-none px-0 transition-colors duration-300 ease-in-out"
@@ -90,48 +96,6 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
   />
 )
 
-// const FormSelect = ({
-//   name,
-//   control,
-//   placeholder,
-//   options,
-// }: {
-//   name: keyof FormValues
-//   control: Control<FormValues>
-//   placeholder: string
-//   options: { value: string; label: string }[]
-// }) => (
-//   <FormField
-//     control={control}
-//     name={name}
-//     render={({ field }) => (
-//       <FormItem>
-//         <FormControl>
-//           <Select onValueChange={field.onChange} value={field.value?.toString() || ""}>
-//             <SelectTrigger className="h-11 text-base md:text-sm border border-bricky-brick-light rounded-md text-neutral-950 cursor-pointer px-2 lg:px-4">
-//               <SelectValue placeholder={placeholder} />
-//             </SelectTrigger>
-//             <SelectContent className="text-neutral-950">
-//               <SelectGroup>
-//                 {options.map((option) => (
-//                   <SelectItem
-//                     key={option.value}
-//                     className="focus:bg-neutral-50 focus:text-neutral-950 cursor-pointer"
-//                     value={option.value}
-//                   >
-//                     {option.label}
-//                   </SelectItem>
-//                 ))}
-//               </SelectGroup>
-//             </SelectContent>
-//           </Select>
-//         </FormControl>
-//         <FormMessage />
-//       </FormItem>
-//     )}
-//   />
-// )
-
 interface UseFormMessage {
   message: { type: "success" | "error"; text: string } | null
   showMessage: (type: "success" | "error", text: string) => void
@@ -159,9 +123,9 @@ interface FormContactProps {
 }
 
 export function ContactForm({ translations }: FormContactProps) {
-  const { message, showMessage } = useFormMessage()
-  const lenis = useLenis()
+  const { showMessage } = useFormMessage()
   const locale = useLocale()
+  const [successDialog, setSuccessDialog] = useState(false)
 
   const residenceTypeDropdownRef = useRef<DropdownMenuCheckboxesRef>(null)
   const howDidYouHearAboutUsDropdownRef = useRef<DropdownMenuCheckboxesRef>(null)
@@ -188,6 +152,7 @@ export function ContactForm({ translations }: FormContactProps) {
       consentEmail: false,
       consentPhone: false,
     },
+    mode: "all",
   })
 
   const residenceTypeValue = form.watch("residenceType")
@@ -195,68 +160,38 @@ export function ContactForm({ translations }: FormContactProps) {
 
   const mutation = useMutation({
     mutationFn: async (data: FormValues) => {
-      try {
-        const formData = new FormData()
-        // Convert all form values to FormData
-        Object.entries(data).forEach(([key, value]) => {
-          formData.append(key, value?.toString() ?? "")
-        })
-
-        // Add current language to formData
-        formData.append("language", locale)
-
-        // Add UTM parameters to formData
-        formData.append("utm_source", getUtmParameter("utm_source"))
-        formData.append("utm_medium", getUtmParameter("utm_medium"))
-        formData.append("utm_campaign", getUtmParameter("utm_campaign"))
-
-        // Add complete URL to formData
-        formData.append("url", window.location.href)
-
-        const response = await fetch("https://crm.citysresidences.com/api/lead.php", {
-          method: "POST",
-          body: formData,
-        })
-
-        const result: { success: boolean; message: string } = await response.json()
-
-        if (!response.ok) {
-          showMessage("error", result.message || "Failed to submit form")
-          throw new Error(result.message || "Failed to submit form")
-        }
-
-        if (!result.success) {
-          showMessage("error", result.message)
-          throw new Error(result.message)
-        }
-
-        showMessage("success", result.message)
-        return result
-      } catch (error) {
-        console.error("Form submission error:", error)
-        throw error
+      const result = await submitContactForm(data, locale)
+      return result
+    },
+    onSuccess: (result) => {
+      if (result.success) {
+        resetDropdowns()
+        form.reset()
+        form.clearErrors()
+        setSuccessDialog(true)
+      } else {
+        showMessage("error", result.message)
       }
     },
-    onSuccess: () => {
-      resetDropdowns()
-      form.reset()
-      form.clearErrors()
-    },
-    onError: () => {
+    onError: (error: unknown) => {
+      console.error("Form submission error:", error)
+
+      if (error instanceof Error) {
+        if (error.message.includes("Failed to fetch")) {
+          showMessage("error", "Network error occurred")
+        } else {
+          showMessage("error", error.message)
+        }
+      } else {
+        showMessage("error", "An unexpected error occurred")
+      }
+
       // Clear error message after 5 seconds
       setTimeout(() => {
         showMessage("error", "")
       }, 5000)
     },
   })
-
-  const onSubmit = (data: FormValues) => {
-    mutation.mutate(data)
-  }
-
-  useEffect(() => {
-    lenis?.resize()
-  }, [form.formState, lenis])
 
   const residenceTypeOptions = useMemo(
     () => [
@@ -313,49 +248,103 @@ export function ContactForm({ translations }: FormContactProps) {
     [form, howDidYouHearAboutUsOptions]
   )
 
+  useEffect(() => {
+    console.log(form.formState.errors)
+  }, [form.formState.errors])
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="font-halenoir space-y-6 lg:space-y-6">
-        <div className="flex flex-col lg:grid grid-flow-col gap-6 lg:gap-4 md:grid-cols-2">
-          <FormInput control={form.control} name="name" placeholder={`${translations.inputs.name.placeholder}*`} />
-          <FormInput
-            control={form.control}
-            name="surname"
-            placeholder={`${translations.inputs.surname.placeholder}*`}
-          />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4">
-          <div className="col-span-1 flex flex-col gap-1">
-            <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm" htmlFor="phone">
-              {`${locale === "tr" ? "Telefon Numarası" : "Phone Number"}*`}
-            </FormLabel>
-            <InternationalPhoneInputComponent form={form} />
-          </div>
-          <div className="col-span-1">
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
+          className="font-halenoir space-y-6 lg:space-y-6"
+          noValidate
+        >
+          <div className="flex flex-col lg:grid grid-flow-col gap-6 lg:gap-4 md:grid-cols-2">
+            <FormInput control={form.control} name="name" placeholder={`${translations.inputs.name.placeholder}*`} />
             <FormInput
               control={form.control}
-              name="email"
-              type="email"
-              placeholder={`${locale === "tr" ? "E-Posta" : "Email"}*`}
-              className="col-span-1 md:col-span-1"
+              name="surname"
+              placeholder={`${translations.inputs.surname.placeholder}*`}
             />
           </div>
-        </div>
-        <div className="flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4">
-          <div className="space-y-1">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4">
+            <div className="col-span-1 flex flex-col gap-1">
+              <FormLabel
+                className="text-neutral-950 font-normal leading-none block text-base md:text-sm"
+                htmlFor="phone"
+              >
+                {`${locale === "tr" ? "Telefon Numarası" : "Phone Number"}*`}
+              </FormLabel>
+              <InternationalPhoneInputComponent form={form} />
+            </div>
+            <div className="col-span-1">
+              <FormInput
+                control={form.control}
+                name="email"
+                type="email"
+                placeholder={`${locale === "tr" ? "E-Posta" : "Email"}*`}
+                className="col-span-1 md:col-span-1"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4">
+            <div className="space-y-1">
+              <FormField
+                control={form.control}
+                name="residenceType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <DropdownMenuCheckboxesResidences
+                        {...field}
+                        placeholder={`${translations.inputs.residenceType.placeholder}*`}
+                        selectedItems={residenceTypeValue !== "" ? residenceTypeValue.split(",") : []}
+                        options={residenceTypeOptions}
+                        onChange={handleResidenceType}
+                        ref={residenceTypeDropdownRef}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="space-y-1">
+              <FormField
+                control={form.control}
+                name="howDidYouHearAboutUs"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <DropdownMenuCheckboxesHear
+                        {...field}
+                        placeholder={`${translations.inputs.howDidYouHearAboutUs.placeholder}*`}
+                        selectedItems={howDidYouHearAboutUsValue !== "" ? howDidYouHearAboutUsValue.split(",") : []}
+                        options={howDidYouHearAboutUsOptions}
+                        onChange={handleHowDidYouHearAboutUs}
+                        ref={howDidYouHearAboutUsDropdownRef}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          <div className="grid grid-flow-col">
             <FormField
               control={form.control}
-              name="residenceType"
+              name="message"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="space-y-1 pt-2">
+                  <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
+                    {translations.inputs.message.placeholder}
+                  </FormLabel>
                   <FormControl>
-                    <DropdownMenuCheckboxesResidences
+                    <Textarea
                       {...field}
-                      placeholder={`${translations.inputs.residenceType.placeholder}*`}
-                      selectedItems={residenceTypeValue !== "" ? residenceTypeValue.split(",") : []}
-                      options={residenceTypeOptions}
-                      onChange={handleResidenceType}
-                      ref={residenceTypeDropdownRef}
+                      className={`${commonInputStyles} min-h-[140px] p-3 rounded-md border border-bricky-brick-light resize-none`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -363,75 +352,52 @@ export function ContactForm({ translations }: FormContactProps) {
               )}
             />
           </div>
-          <div className="space-y-1">
-            <FormField
-              control={form.control}
-              name="howDidYouHearAboutUs"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <DropdownMenuCheckboxesHear
-                      {...field}
-                      placeholder={`${translations.inputs.howDidYouHearAboutUs.placeholder}*`}
-                      selectedItems={howDidYouHearAboutUsValue !== "" ? howDidYouHearAboutUsValue.split(",") : []}
-                      options={howDidYouHearAboutUsOptions}
-                      onChange={handleHowDidYouHearAboutUs}
-                      ref={howDidYouHearAboutUsDropdownRef}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="grid grid-flow-col">
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <FormItem className="space-y-1 pt-2">
-                <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
-                  {translations.inputs.message.placeholder}
-                </FormLabel>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    className={`${commonInputStyles} min-h-[140px] p-3 rounded-md border border-bricky-brick-light resize-none`}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+
+          <ConsentCheckboxes form={form} control={form.control} />
+
+          <button type="submit" disabled={mutation.isPending} className="flex relative">
+            <AnimatedButton text={translations.submit.default} />
+            {mutation.isPending && (
+              <span className="absolute top-1/2 -right-4 -translate-y-1/2 translate-x-full flex items-center justify-center w-6 h-6">
+                <IconLoading fill="var(--bricky-brick)" />
+              </span>
             )}
-          />
-        </div>
-
-        <ConsentCheckboxes form={form} control={form.control} />
-
-        <button type="submit" disabled={mutation.isPending} className="flex relative">
-          <AnimatedButton text={translations.submit.default} />
-          {mutation.isPending && (
-            <span className="absolute top-1/2 -right-4 -translate-y-1/2 translate-x-full flex items-center justify-center w-6 h-6">
-              <IconLoading fill="var(--bricky-brick)" />
-            </span>
+          </button>
+        </form>
+        {/* <AnimatePresence>
+          {message && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`flex items-center justify-center py-6 my-4 ${
+                message.type === "success" ? "text-green-700" : "text-red-700"
+              }`}
+            >
+              {message.text}
+            </motion.div>
           )}
-        </button>
-      </form>
-      <AnimatePresence>
-        {message && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className={`flex items-center justify-center py-6 my-4 ${
-              message.type === "success" ? "text-green-700" : "text-red-700"
-            }`}
-          >
-            {message.text}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </Form>
+        </AnimatePresence> */}
+      </Form>
+      <Dialog open={successDialog} onOpenChange={setSuccessDialog}>
+        <DialogContent className="font-halenoir flex flex-col items-center justify-center py-8">
+          <DialogHeader>
+            <DialogTitle className="text-neutral-950 font-medium leading-none text-base lg:text-2xl flex flex-col items-center gap-2 text-center mb-2">
+              <CheckCircle2 className="w-10 h-10 text-green-500" />
+              {translations.messages.successDialog.title}
+            </DialogTitle>
+            <DialogDescription className="text-neutral-950 font-normal leading-none block text-sm lg:text-base text-center pb-10">
+              {translations.messages.successDialog.description}
+            </DialogDescription>
+            <DialogClose asChild>
+              <button className="text-neutral-950 underline text-sm lg:text-base" type="button">
+                {translations.messages.successDialog.button}
+              </button>
+            </DialogClose>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

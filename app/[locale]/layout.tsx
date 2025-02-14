@@ -7,10 +7,8 @@ import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations } from "next-intl/server"
 import localFont from "next/font/local"
 
-import { GSAP } from "@/components/gsap"
 import { ReactQueryProvider } from "@/components/react-query-provider"
 
-import { SmoothScroll } from "@/components/smooth-scroll"
 import { Lexend_Giga } from "next/font/google"
 
 const lexendGiga = Lexend_Giga({
@@ -102,8 +100,8 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <ReactQueryProvider>{children}</ReactQueryProvider>
         </NextIntlClientProvider>
-        <GSAP scrollTrigger={true} />
-        <SmoothScroll root={true} />
+        {/* <GSAP scrollTrigger={true} />
+        <SmoothScroll root={true} /> */}
       </body>
     </html>
   )

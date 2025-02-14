@@ -87,7 +87,12 @@
             },
             "messages": {
                 "error": "Form gönderilirken hata oluştu",
-                "success": "Form başarıyla gönderildi"
+                "success": "Form başarıyla gönderildi",
+                "successDialog": {
+                    "title": "İlginiz İçin Teşekkür Ederiz",
+                    "description": "Satış ekibimizden bir temsilcimiz en kısa sürede sizinle iletişime geçecektir. Bu özel proje hakkında sizinle görüşmek ve detayları paylaşmak için sabırsızlanıyoruz.",
+                    "button": "Sayfaya Dön"
+                }
             }
         }
     }

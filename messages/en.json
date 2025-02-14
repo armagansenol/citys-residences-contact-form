@@ -87,7 +87,12 @@
             },
             "messages": {
                 "error": "Failed to submit form",
-                "success": "Form submitted successfully"
+                "success": "Form submitted successfully",
+                "successDialog": {
+                    "title": "Thank You for Your Interest",
+                    "description": "A representative from our sales team will contact you shortly. We look forward to speaking with you and sharing details about this special project.",
+                    "button": "Return to Page"
+                }
             }
         }
     }

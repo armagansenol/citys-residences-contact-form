@@ -247,5 +247,10 @@ export interface FormTranslations {
   messages: {
     error: string
     success: string
+    successDialog: {
+      title: string
+      description: string
+      button: string
+    }
   }
 }
