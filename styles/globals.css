@@ -17,6 +17,10 @@
   scrollbar-width: thin;
 }
 
+html {
+  overscroll-behavior: none;
+}
+
 /* Core styles that shouldn't be reset */
 body {
   min-height: 100vh;
