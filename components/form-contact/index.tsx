@@ -277,6 +277,9 @@ export function ContactForm({ translations }: FormContactProps) {
     form.register("phone", {
       onChange: () => form.trigger("phone"), // Validate phone on change
     })
+    form.register("email", {
+      onChange: () => form.trigger("email"), // Validate email on change
+    })
   }, [form])
 
   return (
