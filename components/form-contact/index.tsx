@@ -86,7 +86,7 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
             type={type}
             {...field}
             value={field.value?.toString() ?? ""}
-            className={`${commonInputStyles} h-10 px-4 border border-bricky-brick-light rounded-md ${className}`}
+            className={`${commonInputStyles} h-10 px-2 lg:px-4 border border-bricky-brick-light rounded-md ${className}`}
             onChange={(e) => {
               const value = e.target.value
               if (name === "name" || name === "surname") {
