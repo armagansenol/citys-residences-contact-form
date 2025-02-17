@@ -29,8 +29,8 @@ import { isPhoneValid } from "@/lib/utils"
 import { FormTranslations } from "@/types"
 const getFormSchema = (translations: FormTranslations) =>
   z.object({
-    name: z.string().min(1, { message: translations.inputs.name.errors.required }),
-    surname: z.string().min(1, { message: translations.inputs.surname.errors.required }),
+    name: z.string().min(2, { message: translations.inputs.name.errors.required }),
+    surname: z.string().min(2, { message: translations.inputs.surname.errors.required }),
     countryCode: z.string(),
     phone: z.string().refine(
       (val) => {
@@ -44,7 +44,6 @@ const getFormSchema = (translations: FormTranslations) =>
       },
       { message: translations.inputs.phone.errors.required }
     ),
-
     email: z
       .string()
       .min(1, { message: translations.inputs.email.errors.required })
