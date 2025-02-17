@@ -155,5 +155,8 @@ const config: Config = {
     },
   },
   plugins: [aspectRatio, animate],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
 }
 export default config
