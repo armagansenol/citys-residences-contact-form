@@ -122,7 +122,7 @@ export default function Contact() {
           <h2 className="text-neutral-900 text-base font-normal font-halenoir text-center lg:text-left">
             {t("description")}
           </h2>
-          <div className="lg:px-12 xl:px-0 pb-12 lg:pb-0">
+          <div className="lg:px-12 xl:px-0 pb-12 lg:pb-0 xl:pb-12">
             <ContactForm translations={formTranslations} />
           </div>
         </div>
