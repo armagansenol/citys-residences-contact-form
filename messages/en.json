@@ -10,7 +10,7 @@
         "locale": "{locale, select, en}"
     },
     "contact": {
-        "description": "Please enter your contact information, our sales team will contact you shortly.",
+        "description": "Please fill out the registration form below so our team can contact you.",
         "form": {
             "inputs": {
                 "name": {

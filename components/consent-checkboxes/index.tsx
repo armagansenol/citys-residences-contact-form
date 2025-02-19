@@ -124,7 +124,7 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
             </FormItem>
           )}
         />
-        <div className="space-y-2">
+        <div className="flex gap-8">
           {["consentSms", "consentEmail", "consentPhone"].map((name) => (
             <FormField
               key={name}
@@ -132,7 +132,7 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
               name={name}
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex flex-row gap-3 space-y-0 group">
+                  <div className="flex flex-row gap-1.5 space-y-0 group">
                     <FormControl>
                       <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>

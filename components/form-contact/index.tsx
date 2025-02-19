@@ -52,10 +52,12 @@ const getFormSchema = (translations: FormTranslations) =>
     howDidYouHearAboutUs: z.string().min(1, { message: translations.inputs.howDidYouHearAboutUs.errors.required }),
     message: z.string(),
     consent: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
-    consentElectronicMessage: z.boolean(),
-    consentSms: z.boolean(),
-    consentEmail: z.boolean(),
-    consentPhone: z.boolean(),
+    consentElectronicMessage: z
+      .boolean()
+      .refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
+    consentSms: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
+    consentEmail: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
+    consentPhone: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
   })
 
 export type FormValues = z.infer<ReturnType<typeof getFormSchema>>
