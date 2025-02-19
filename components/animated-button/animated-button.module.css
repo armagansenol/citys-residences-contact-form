@@ -1,66 +1,112 @@
 .button {
-  --padding: desktop-vw(6px);
-  --height: desktop-vw(42px);
-  --width: desktop-vw(200px);
-
-  color: var(--bricky-brick);
-  height: var(--height);
-  width: var(--width);
   border: 1px solid var(--bricky-brick);
+  border-radius: mobile-vw(5px);
+  color: var(--bricky-brick);
+  font-family: var(--font-halenoir);
+  font-size: var(--font-size);
+  font-weight: 500;
+  height: var(--height);
+  overflow: hidden;
   padding: var(--padding);
-
-  @include-media ('mobile') {
-    --padding: mobile-vw(4px);
-    --height: mobile-vw(56px);
-    --width: mobile-vw(240px);
-  }
+  position: relative;
+  width: var(--width);
 
   @include-media ('tablet') {
-    --padding: desktop-vw(6px);
-    --height: desktop-vw(64px);
-    --width: desktop-vw(330px);
+    border-radius: tablet-vw(5px);
   }
 
   @include-media ('desktop') {
-    --padding: desktop-vw(6px);
-    --height: desktop-vw(42px);
-    --width: desktop-vw(200px);
+    border-radius: desktop-vw(5px);
   }
 
-  .text {
-    font-family: var(--font-halenoir);
-    font-size: mobile-vw(16px);
-    font-weight: 500;
-    line-height: 1;
-    padding-top: 2px;
-    white-space: nowrap;
+  &.sm {
+    --font-size: mobile-vw(12px);
+    --padding: mobile-vw(6px);
+    --height: mobile-vw(36px);
+    --width: mobile-vw(160px);
 
     @include-media ('tablet') {
-      font-size: desktop-vw(24px);
+      --font-size: tablet-vw(12px);
+      --padding: tablet-vw(6px);
+      --height: tablet-vw(36px);
+      --width: tablet-vw(160px);
     }
 
     @include-media ('desktop') {
-      font-size: desktop-vw(14px);
+      --font-size: desktop-vw(12px);
+      --padding: desktop-vw(6px);
+      --height: desktop-vw(36px);
+      --width: desktop-vw(160px);
     }
   }
 
-  .iconC {
-    height: calc(var(--height) - var(--padding) * 2);
-    width: calc(var(--height) - var(--padding) * 2);
+  &.md {
+    --font-size: mobile-vw(14px);
+    --padding: mobile-vw(6px);
+    --height: mobile-vw(42px);
+    --width: mobile-vw(200px);
 
-    .icon {
-      height: mobile-vw(20px);
-      width: mobile-vw(20px);
+    @include-media ('tablet') {
+      --font-size: tablet-vw(14px);
+      --padding: tablet-vw(6px);
+      --height: tablet-vw(42px);
+      --width: tablet-vw(200px);
+    }
 
-      @include-media ('tablet') {
-        height: desktop-vw(20px);
-        width: desktop-vw(20px);
-      }
+    @include-media ('desktop') {
+      --font-size: desktop-vw(14px);
+      --padding: desktop-vw(6px);
+      --height: desktop-vw(42px);
+      --width: desktop-vw(200px);
+    }
+  }
 
-      @include-media ('desktop') {
-        height: desktop-vw(15px);
-        width: desktop-vw(15px);
-      }
+  &.lg {
+    --font-size: mobile-vw(16px);
+    --padding: mobile-vw(8px);
+    --height: mobile-vw(52px);
+    --width: mobile-vw(280px);
+
+    @include-media ('tablet') {
+      --font-size: tablet-vw(16px);
+      --padding: tablet-vw(8px);
+      --height: tablet-vw(52px);
+      --width: tablet-vw(280px);
+    }
+
+    @include-media ('desktop') {
+      --font-size: desktop-vw(16px);
+      --padding: desktop-vw(8px);
+      --height: desktop-vw(52px);
+      --width: desktop-vw(280px);
+    }
+  }
+}
+
+.text {
+  color: var(--bricky-brick);
+  font-family: var(--font-halenoir);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.iconC {
+  height: calc(var(--height) - var(--padding) * 2);
+  width: calc(var(--height) - var(--padding) * 2);
+
+  .icon {
+    height: mobile-vw(15px);
+    width: mobile-vw(15px);
+
+    @include-media ('tablet') {
+      height: tablet-vw(15px);
+      width: tablet-vw(15px);
+    }
+
+    @include-media ('desktop') {
+      height: desktop-vw(15px);
+      width: desktop-vw(15px);
     }
   }
 }

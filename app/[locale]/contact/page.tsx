@@ -1,9 +1,10 @@
-import { ContactForm } from "@/components/form-contact"
-import { LogoHorizontal } from "@/components/icons"
-import { LocaleSwitcher } from "@/components/locale-switcher"
-import { Video } from "@/components/utility/video"
-import { FormTranslations } from "@/types"
 import { useTranslations } from "next-intl"
+import Image from "next/image"
+
+import { ContactForm } from "@/components/form-contact"
+import { Logo } from "@/components/icons"
+import { LocaleSwitcher } from "@/components/locale-switcher"
+import { FormTranslations } from "@/types"
 
 export default function Contact() {
   const t = useTranslations("contact")
@@ -87,39 +88,48 @@ export default function Contact() {
     },
   }
 
-  const video = (
-    <Video
-      primaryVideoUrl="https://player.vimeo.com/progressive_redirect/playback/1050026684/rendition/1080p/file.mp4?loc=external&log_user=0&signature=fda1ef0d723ecd6a77745792fc70643e9bc8e0cce3e4b8e3cf266d25613fb891"
-      autoPlay
-      loop
-      muted
-      playsInline
-      className="w-full h-full object-cover"
-    />
-  )
+  // const video = (
+  //   <Video
+  //     primaryVideoUrl="https://player.vimeo.com/progressive_redirect/playback/1050026684/rendition/1080p/file.mp4?loc=external&log_user=0&signature=fda1ef0d723ecd6a77745792fc70643e9bc8e0cce3e4b8e3cf266d25613fb891"
+  //     autoPlay
+  //     loop
+  //     muted
+  //     playsInline
+  //     className="w-full h-full object-cover"
+  //   />
+  // )
 
   return (
-    <div className="flex flex-col-reverse lg:flex-col xl:grid grid-cols-2">
-      <div className="col-span-1 h-screen flex flex-col">
-        <div className="px-4 lg:px-12 relative xl:fixed top-0 left-0 w-full xl:w-1/2 bg-white z-10">
-          <div className="flex items-center justify-between xl:border-b border-bricky-brick-light py-4 xl:py-6">
-            <div className="w-48 md:w-64">
-              <LogoHorizontal />
-            </div>
-            <div>
-              <LocaleSwitcher theme="dark" />
-            </div>
+    <div className="flex flex-col xl:grid grid-cols-2">
+      <div className="px-4 lg:px-12 relative xl:fixed top-0 left-0 w-full bg-white z-10">
+        <div className="flex items-center justify-between xl:border-b border-bricky-brick-light py-4 xl:py-3">
+          <div className="opacity-0 pointer-events-none">
+            <LocaleSwitcher theme="dark" />
+          </div>
+          <div className="w-28 md:w-36">
+            <Logo fill="var(--bricky-brick)" />
+          </div>
+          <div>
+            <LocaleSwitcher theme="dark" />
           </div>
         </div>
-        <div className="flex flex-col justify-start gap-6 lg:gap-8 px-4 lg:px-12 pb-8 lg:pb-20 xl:mt-32">
-          <div className="block xl:hidden col-span-1 -mx-4 lg:-mx-12 lg:h-[500px]">{video}</div>
-          <h1 className="text-neutral-900 text-sm font-normal font-halenoir max-w-xs">{t("description")}</h1>
-          <div className="lg:pr-48 xl:pr-0 pb-12 lg:pb-0">
+      </div>
+      <div className="col-span-1 xl:h-screen flex flex-col">
+        <div className="flex flex-col items-center justify-center xl:items-start gap-6 lg:gap-8 px-4 lg:px-12 pb-8 lg:pb-0 xl:mt-40">
+          <div className="xl:hidden col-span-1 -mx-4 lg:-mx-12 py-4 lg:py-8 px-4 lg:px-32 flex items-center justify-center">
+            <Image src="/img/yasama-sanati.png" alt="Contact Form Image" width={1500} height={1500} />
+          </div>
+          <h2 className="text-neutral-900 text-base font-normal font-halenoir text-center lg:text-left">
+            {t("description")}
+          </h2>
+          <div className="lg:px-12 xl:px-0 pb-12 lg:pb-0">
             <ContactForm translations={formTranslations} />
           </div>
         </div>
       </div>
-      <div className="hidden xl:block col-span-1 fixed top-0 right-0 w-1/2 h-full">{video}</div>
+      <div className="col-span-1 fixed top-0 right-0 w-1/2 h-full hidden xl:flex items-center px-16">
+        <Image src="/img/yasama-sanati.png" alt="Contact Form Image" width={1500} height={1500} />
+      </div>
     </div>
   )
 }

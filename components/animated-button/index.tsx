@@ -2,137 +2,133 @@
 
 import s from "./animated-button.module.css"
 
-import { gsap } from "@/components/gsap"
-import { useGSAP } from "@gsap/react"
 import cn from "clsx"
 import { ArrowRight } from "lucide-react"
-import { useRef, useState } from "react"
-import { useWindowSize } from "react-use"
+import { MotionProps, motion } from "motion/react"
+import { useState } from "react"
 
 interface AnimatedButtonProps {
+  size?: "sm" | "md" | "lg"
   text: string
-  path?: string
+  theme?: "primary" | "secondary"
 }
 
-export function AnimatedButton({ text = "Button Text" }: AnimatedButtonProps) {
-  const [hover, setHover] = useState(false)
-  const buttonRef = useRef<HTMLSpanElement>(null)
-  const buttonTL = useRef<gsap.core.Timeline>()
-  const { width } = useWindowSize({ initialWidth: 1680 })
+export function AnimatedButton({ size = "md", text = "Button Text", theme = "primary" }: AnimatedButtonProps) {
+  const [isOn, setIsOn] = useState(false)
+  const toggleSwitch = () => setIsOn(!isOn)
 
-  useGSAP(
-    () => {
-      if (!buttonRef.current) return
+  const transition: MotionProps["transition"] = {
+    type: "tween",
+    duration: 0.4,
+    ease: [0.785, 0.135, 0.15, 0.86],
+  }
 
-      buttonTL.current = gsap.timeline({
-        paused: true,
-        reversed: true,
-      })
-
-      const ease = "expo.inOut"
-
-      buttonTL.current
-        .to(
-          ".gsap-text",
-          {
-            color: "white",
-            duration: 0.4,
-            ease,
-          },
-          "s"
-        )
-        .to(
-          ".gsap-bg",
-          {
-            y: 0,
-            duration: 0.4,
-            ease,
-          },
-          "s"
-        )
-        .from(
-          ".gsap-arrow-left",
-          {
-            xPercent: -200,
-            duration: 1,
-            ease,
-          },
-          "s"
-        )
-        .from(
-          ".gsap-btn-left",
-          {
-            xPercent: -100,
-            duration: 0.8,
-            ease,
-          },
-          "s"
-        )
-        .to(
-          ".gsap-btn-right",
-          {
-            xPercent: 100,
-            duration: 0.4,
-            ease,
-          },
-          "s"
-        )
+  const themes = {
+    primary: {
+      c1: "--white",
+      c2: "--bricky-brick",
     },
-    {
-      scope: buttonRef,
-    }
-  )
-
-  useGSAP(
-    () => {
-      if (width < 1200) {
-        buttonTL.current?.progress(0)
-        return
-      }
-
-      if (hover) {
-        buttonTL.current?.play()
-      } else {
-        buttonTL.current?.reverse()
-      }
+    secondary: {
+      c1: "--bricky-brick",
+      c2: "--white",
     },
-    {
-      dependencies: [hover, width],
-    }
-  )
+  }
 
   return (
     <span
-      className={cn(
-        s.button,
-        "gsap-button flex items-center justify-center cursor-pointer relative overflow-hidden rounded-md"
-      )}
-      ref={buttonRef}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      className={cn(s.button, "blur-bg-white", "test flex items-center justify-center cursor-pointer", {
+        [s.sm]: size === "sm",
+        [s.md]: size === "md",
+        [s.lg]: size === "lg",
+      })}
+      onMouseEnter={toggleSwitch}
+      onMouseLeave={toggleSwitch}
     >
-      <span className="relative w-full h-full flex items-center justify-between">
-        <span className={cn(s.iconC, "gsap-btn-right flex items-center justify-center flex-shrink-0 z-20 opacity-0")}>
-          <ArrowRight className={cn(s.icon, "text-bricky-brick")} />
-        </span>
-        <span className="gsap-btn-left flex items-center justify-center z-20 relative">
+      <span
+        className={cn("relative w-full h-full flex items-center", {
+          "justify-center": isOn,
+          "justify-start": !isOn,
+        })}
+      >
+        {/* text */}
+        <motion.span
+          className={cn("z-20 relative")}
+          initial={{
+            color: `var(${themes[theme].c2})`,
+          }}
+          animate={{
+            color: isOn ? `var(${themes[theme].c1})` : `var(${themes[theme].c2})`,
+          }}
+          layout
+          transition={transition}
+        >
+          {/* icon left */}
           <span
             className={cn(
               s.iconC,
-              "gsap-arrow-left flex items-center justify-center flex-shrink-0 absolute top-1/2 -translate-y-1/2 left-0 -translate-x-full"
+              "absolute top-1/2 left-0 -translate-y-1/2 -translate-x-full flex items-center justify-center flex-shrink-0 z-20"
             )}
           >
-            <ArrowRight className={cn(s.icon, "text-white")} />
+            <motion.span
+              className="block"
+              initial={{
+                x: "-600%",
+              }}
+              animate={{
+                x: isOn ? 0 : "-600%",
+              }}
+              transition={{
+                ...transition,
+                duration: 1,
+              }}
+            >
+              <ArrowRight
+                className={cn(s.icon, {
+                  "text-bricky-brick": theme === "secondary",
+                  "text-white": theme === "primary",
+                })}
+              />
+            </motion.span>
           </span>
-          <span className={cn(s.text, "gsap-text block z-20")}>{text}</span>
-        </span>
-        <span className={cn(s.iconC, "gsap-btn-right flex items-center justify-center flex-shrink-0 z-20")}>
-          <ArrowRight className={cn(s.icon, "text-bricky-brick")} />
-        </span>
+          <span className="translate-y-[2px]">{text}</span>
+        </motion.span>
       </span>
-      <span
-        className={cn(s.bg, "gsap-bg bg-bricky-brick absolute top-0 left-0 right-0 bottom-0 translate-y-full z-10")}
-      ></span>
+      {/* background */}
+      <motion.span
+        className={cn(s["bg"], "absolute block w-full h-full translate-y-full z-10", {
+          "bg-bricky-brick": theme === "primary",
+          "bg-white": theme === "secondary",
+        })}
+        initial={{
+          y: "100%",
+        }}
+        animate={{
+          y: isOn ? 0 : "100%",
+        }}
+        transition={transition}
+      ></motion.span>
+      {/* icon right */}
+      <motion.span
+        className={cn(
+          s.iconC,
+          "absolute top-1/2 right-0 -translate-y-1/2 flex items-center justify-center flex-shrink-0"
+        )}
+      >
+        <motion.span
+          className="block"
+          animate={{
+            x: isOn ? "200%" : 0,
+          }}
+          transition={transition}
+        >
+          <ArrowRight
+            className={cn(s.icon, {
+              "text-bricky-brick": theme === "primary",
+              "text-white": theme === "secondary",
+            })}
+          />
+        </motion.span>
+      </motion.span>
     </span>
   )
 }

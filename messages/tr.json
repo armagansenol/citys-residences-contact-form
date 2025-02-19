@@ -10,7 +10,7 @@
         "locale": "{locale, select, tr}"
     },
     "contact": {
-        "description": "Lütfen iletişim bilgilerinizi giriniz. Satış ekibimiz kısa süre içinde sizinle iletişime geçecektir.",
+        "description": "Bilgi almak için lütfen kayıt formunu doldurun, ekibimiz sizinle iletişime geçecektir.",
         "form": {
             "inputs": {
                 "name": {

@@ -374,7 +374,7 @@ export function ContactForm({ translations }: FormContactProps) {
                   <FormControl>
                     <Textarea
                       {...field}
-                      className={`${commonInputStyles} min-h-[140px] p-3 rounded-md border border-bricky-brick-light resize-none`}
+                      className={`${commonInputStyles} min-h-[100px] p-3 rounded-md border border-bricky-brick-light resize-none`}
                     />
                   </FormControl>
                   <FormMessage />

@@ -56,7 +56,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, phoneIn
         }}
         value={phoneInput.country.dialCode.toString()}
       >
-        <SelectTrigger className="w-24 h-10 rounded-md text-neutral-950 cursor-pointer text-base md:text-sm border border-bricky-brick-light">
+        <SelectTrigger className="w-24 h-10 rounded-md text-bricky-brick font-medium cursor-pointer text-base md:text-sm border border-bricky-brick-light">
           <SelectValue placeholder="Code">+{phoneInput.country.dialCode}</SelectValue>
         </SelectTrigger>
         <SelectContent className="bg-white text-neutral-950 border border-bricky-brick-light rounded-md z-50">
