@@ -45,6 +45,10 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
     }
   }, [consentElectronicMessageValue])
 
+  useEffect(() => {
+    form.trigger("consentElectronicMessage")
+  }, [consentSmsValue, consentEmailValue, consentPhoneValue])
+
   return (
     <div className={`space-y-5 ${className}`}>
       <FormField

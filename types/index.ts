@@ -234,7 +234,7 @@ export interface FormTranslations {
       options: Record<string, string>
     }
     consent: { placeholder: string; errors: { required: string } }
-    consentElectronicMessage: { placeholder: string }
+    consentElectronicMessage: { placeholder: string; errors: { required: string } }
     consentSms: { placeholder: string }
     consentEmail: { placeholder: string }
     consentPhone: { placeholder: string }

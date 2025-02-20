@@ -69,10 +69,13 @@
                     }
                 },
                 "consentElectronicMessage": {
-                    "placeholder": "Tarafıma ticari elektronik ileti gönderilmesine <legal4>açık rızam var</legal4>."
+                    "placeholder": "Tarafıma ticari elektronik ileti gönderilmesine <legal4>açık rızam var</legal4>.",
+                    "errors": {
+                        "required": "Zorunlu alan, lütfen aşağıdaki seçeneklerden en az birini seçiniz"
+                    }
                 },
                 "consentSms": {
-                    "placeholder": "Sms"
+                    "placeholder": "SMS"
                 },
                 "consentEmail": {
                     "placeholder": "Email"

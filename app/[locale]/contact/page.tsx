@@ -62,6 +62,9 @@ export default function Contact() {
       },
       consentElectronicMessage: {
         placeholder: t("form.inputs.consentElectronicMessage.placeholder"),
+        errors: {
+          required: t("form.inputs.consentElectronicMessage.errors.required"),
+        },
       },
       consentSms: {
         placeholder: t("form.inputs.consentSms.placeholder"),

@@ -34,12 +34,6 @@ const getFormSchema = (translations: FormTranslations) =>
     countryCode: z.string(),
     phone: z.string().refine(
       (val) => {
-        // const selectedCountryCode = defaultCountries.find((country) => `+${parseCountry(country).dialCode}` === val)
-
-        // const parsedCountryCode = selectedCountryCode && parseCountry(selectedCountryCode)
-
-        // if (val === `+${parsedCountryCode?.dialCode}`) return true
-
         return isPhoneValid(val)
       },
       { message: translations.inputs.phone.errors.required }
@@ -54,10 +48,10 @@ const getFormSchema = (translations: FormTranslations) =>
     consent: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
     consentElectronicMessage: z
       .boolean()
-      .refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
-    consentSms: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
-    consentEmail: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
-    consentPhone: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
+      .refine((data) => data === true, { message: translations.inputs.consentElectronicMessage.errors.required }),
+    consentSms: z.boolean(),
+    consentEmail: z.boolean(),
+    consentPhone: z.boolean(),
   })
 
 export type FormValues = z.infer<ReturnType<typeof getFormSchema>>
