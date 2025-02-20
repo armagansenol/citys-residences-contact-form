@@ -304,7 +304,7 @@ export function ContactForm({ translations }: FormContactProps) {
                 className="text-neutral-950 font-normal leading-none block text-base md:text-sm"
                 htmlFor="phone"
               >
-                {`${locale === "tr" ? "Telefon Numarası" : "Phone Number"}*`}
+                {`${locale === "tr" ? "Telefon Numarası" : "Telephone Number"}*`}
               </FormLabel>
               <InternationalPhoneInputComponent form={form} />
             </div>
@@ -396,21 +396,6 @@ export function ContactForm({ translations }: FormContactProps) {
             )}
           </button>
         </form>
-        {/* <AnimatePresence>
-          {message && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className={`flex items-center justify-center py-6 my-4 ${
-                message.type === "success" ? "text-green-700" : "text-red-700"
-              }`}
-            >
-              {message.text}
-            </motion.div>
-          )}
-        </AnimatePresence> */}
       </Form>
       <Dialog open={successDialog} onOpenChange={setSuccessDialog}>
         <DialogContent className="font-halenoir flex flex-col items-center justify-center py-8">
