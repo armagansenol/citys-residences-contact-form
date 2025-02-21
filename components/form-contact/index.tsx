@@ -27,32 +27,46 @@ import { Textarea } from "@/components/ui/textarea"
 import { submitContactForm } from "@/lib/api/submit-contact-form"
 import { isPhoneValid } from "@/lib/utils"
 import { FormTranslations } from "@/types"
+
 const getFormSchema = (translations: FormTranslations) =>
-  z.object({
-    name: z.string().min(2, { message: translations.inputs.name.errors.required }),
-    surname: z.string().min(2, { message: translations.inputs.surname.errors.required }),
-    countryCode: z.string(),
-    phone: z.string().refine(
-      (val) => {
-        return isPhoneValid(val)
+  z
+    .object({
+      name: z.string().min(2, { message: translations.inputs.name.errors.required }),
+      surname: z.string().min(2, { message: translations.inputs.surname.errors.required }),
+      countryCode: z.string(),
+      phone: z.string().refine(
+        (val) => {
+          return isPhoneValid(val)
+        },
+        { message: translations.inputs.phone.errors.required }
+      ),
+      email: z
+        .string()
+        .min(1, { message: translations.inputs.email.errors.required })
+        .email({ message: translations.inputs.email.errors.email }),
+      residenceType: z.string().min(1, { message: translations.inputs.residenceType.errors.required }),
+      howDidYouHearAboutUs: z.string().min(1, { message: translations.inputs.howDidYouHearAboutUs.errors.required }),
+      message: z.string(),
+      consent: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
+      consentElectronicMessage: z.boolean().refine((data) => data === true, {
+        message: translations.inputs.consentElectronicMessage.errors.required,
+      }),
+      consentSms: z.boolean(),
+      consentEmail: z.boolean(),
+      consentPhone: z.boolean(),
+    })
+    .refine(
+      (data) => {
+        if (data.consentElectronicMessage) {
+          return data.consentSms || data.consentEmail || data.consentPhone
+        }
+        return true
       },
-      { message: translations.inputs.phone.errors.required }
-    ),
-    email: z
-      .string()
-      .min(1, { message: translations.inputs.email.errors.required })
-      .email({ message: translations.inputs.email.errors.email }),
-    residenceType: z.string().min(1, { message: translations.inputs.residenceType.errors.required }),
-    howDidYouHearAboutUs: z.string().min(1, { message: translations.inputs.howDidYouHearAboutUs.errors.required }),
-    message: z.string(),
-    consent: z.boolean().refine((data) => data === true, { message: translations.inputs.consent.errors.required }),
-    consentElectronicMessage: z
-      .boolean()
-      .refine((data) => data === true, { message: translations.inputs.consentElectronicMessage.errors.required }),
-    consentSms: z.boolean(),
-    consentEmail: z.boolean(),
-    consentPhone: z.boolean(),
-  })
+      {
+        message: translations.inputs.consentElectronicMessage.errors.required,
+        path: ["consentElectronicMessage"],
+      }
+    )
 
 export type FormValues = z.infer<ReturnType<typeof getFormSchema>>
 

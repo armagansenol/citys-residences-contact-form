@@ -1,7 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useTranslations } from "next-intl"
-import { useEffect } from "react"
 import { Control, UseFormReturn } from "react-hook-form"
 
 interface ConsentCheckboxesProps {
@@ -12,42 +11,39 @@ interface ConsentCheckboxesProps {
 
 export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxesProps) {
   const t = useTranslations()
+  const { setValue, getValues, trigger } = form
 
-  const consentElectronicMessageValue = form.watch("consentElectronicMessage")
-  const consentSmsValue = form.watch("consentSms")
-  const consentEmailValue = form.watch("consentEmail")
-  const consentPhoneValue = form.watch("consentPhone")
-
-  useEffect(() => {
-    if (!consentElectronicMessageValue) {
-      form.setValue("consentSms", false)
-      form.setValue("consentEmail", false)
-      form.setValue("consentPhone", false)
-    }
-  }, [consentElectronicMessageValue])
-
-  useEffect(() => {
-    if (consentSmsValue || consentEmailValue || consentPhoneValue) {
-      form.setValue("consentElectronicMessage", true)
-      form.setValue("consent", true)
+  const handleConsentElectronicMessageChange = (checked: boolean) => {
+    setValue("consentElectronicMessage", checked)
+    if (checked) {
+      setValue("consentSms", true, { shouldValidate: true })
+      setValue("consentEmail", true, { shouldValidate: true })
+      setValue("consentPhone", true, { shouldValidate: true })
     } else {
-      form.setValue("consentElectronicMessage", false)
+      setValue("consentSms", false, { shouldValidate: true })
+      setValue("consentEmail", false, { shouldValidate: true })
+      setValue("consentPhone", false, { shouldValidate: true })
     }
-  }, [consentSmsValue, consentEmailValue, consentPhoneValue])
 
-  useEffect(() => {
-    const isFirstCheck = consentElectronicMessageValue && !consentSmsValue && !consentEmailValue && !consentPhoneValue
+    trigger("consentElectronicMessage")
+  }
 
-    if (isFirstCheck) {
-      form.setValue("consentSms", true)
-      form.setValue("consentEmail", true)
-      form.setValue("consentPhone", true)
+  const handleSubCheckboxChange = (checkboxName: "consentSms" | "consentEmail" | "consentPhone", checked: boolean) => {
+    setValue(checkboxName, checked, { shouldValidate: true })
+
+    const otherCheckboxes = ["consentSms", "consentEmail", "consentPhone"].filter(
+      (name) => name !== checkboxName
+    ) as Array<"consentSms" | "consentEmail" | "consentPhone">
+
+    if (checked) {
+      setValue("consentElectronicMessage", true, { shouldValidate: true })
+    } else {
+      const allUnchecked = otherCheckboxes.every((name) => !getValues(name))
+      if (allUnchecked) {
+        setValue("consentElectronicMessage", false, { shouldValidate: true })
+      }
     }
-  }, [consentElectronicMessageValue])
-
-  useEffect(() => {
-    form.trigger("consentElectronicMessage")
-  }, [consentSmsValue, consentEmailValue, consentPhoneValue])
+  }
 
   return (
     <div className={`space-y-5 ${className}`}>
@@ -107,7 +103,13 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
             <FormItem>
               <div className="flex flex-row gap-3 space-y-0 group">
                 <FormControl>
-                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(checked) => {
+                      field.onChange(checked)
+                      handleConsentElectronicMessageChange(checked as boolean)
+                    }}
+                  />
                 </FormControl>
                 <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
                   {t.rich("contact.form.inputs.consentElectronicMessage.placeholder", {
@@ -138,7 +140,16 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
                 <FormItem>
                   <div className="flex flex-row gap-1.5 space-y-0 group">
                     <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked)
+                          handleSubCheckboxChange(
+                            name as "consentSms" | "consentEmail" | "consentPhone",
+                            checked as boolean
+                          )
+                        }}
+                      />
                     </FormControl>
                     <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
                       {name === "consentSms" &&
