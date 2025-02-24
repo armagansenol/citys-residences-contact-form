@@ -122,9 +122,9 @@ export default function Contact() {
           <div className="xl:hidden col-span-1 -mx-4 lg:-mx-12 py-4 lg:py-8 px-4 lg:px-64 xl:px-32 flex items-center justify-center">
             <Image src="/img/yasama-sanati.png" alt="Contact Form Image" width={1500} height={1500} />
           </div>
-          <h2 className="text-neutral-900 text-base lg:text-sm font-normal font-halenoir text-center lg:text-left">
+          <h2 className="text-neutral-900 text-base lg:text-sm font-normal font-halenoir text-left lg:text-center xl:text-left leading-normal">
             {t.rich("description", {
-              br: () => <br />,
+              br: () => <br className="hidden lg:block" />,
             })}
           </h2>
           <div className="lg:px-12 xl:px-0 pb-12 lg:pb-0 xl:pb-12">
