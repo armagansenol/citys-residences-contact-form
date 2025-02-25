@@ -8,20 +8,26 @@ const nextConfig = {
   redirects: async () => {
     return [
       {
+        source: "/",
+        destination: "/contact",
+        permanent: true,
+      },
+      {
         source: "/home",
-        destination: "/",
+        destination: "/contact",
+        permanent: true,
+      },
+      {
+        source: "/en",
+        destination: "/en/contact",
+        permanent: true,
+      },
+      {
+        source: "/en/",
+        destination: "/en/contact",
         permanent: true,
       },
     ]
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cms.citysresidences.com",
-        pathname: "**",
-      },
-    ],
   },
 }
 

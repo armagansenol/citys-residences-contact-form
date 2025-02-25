@@ -7,6 +7,10 @@ export const routing = defineRouting({
   localeDetection: false,
   pathnames: {
     "/": "/",
+    "/contact": {
+      tr: "/iletisim",
+      en: "/contact",
+    },
   },
   localePrefix: "as-needed",
 })
