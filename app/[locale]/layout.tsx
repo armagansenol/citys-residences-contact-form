@@ -6,6 +6,7 @@ import { colors, themes } from "@/styles/config.mjs"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations } from "next-intl/server"
 import localFont from "next/font/local"
+import { Analytics } from "@vercel/analytics/react"
 
 import { ReactQueryProvider } from "@/components/react-query-provider"
 
@@ -100,6 +101,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <ReactQueryProvider>{children}</ReactQueryProvider>
         </NextIntlClientProvider>
+        <Analytics />
         {/* <GSAP scrollTrigger={true} />
         <SmoothScroll root={true} /> */}
       </body>
