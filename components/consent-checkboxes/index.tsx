@@ -138,7 +138,7 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
               name={name}
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex flex-row gap-1.5 space-y-0 group">
+                  <div className="flex flex-row gap-3 space-y-0 group">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
