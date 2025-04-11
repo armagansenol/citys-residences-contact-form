@@ -11,6 +11,7 @@ import { Analytics } from "@vercel/analytics/react"
 import { ReactQueryProvider } from "@/components/react-query-provider"
 
 import { Lexend_Giga } from "next/font/google"
+import { Footer } from "@/components/footer"
 
 const lexendGiga = Lexend_Giga({
   subsets: ["latin"],
@@ -99,7 +100,10 @@ export default async function LocaleLayout({
       </head>
       <body className={`${halenoir.variable} ${lexendGiga.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          <ReactQueryProvider>
+            {children}
+            <Footer />
+          </ReactQueryProvider>
         </NextIntlClientProvider>
         <Analytics />
         {/* <GSAP scrollTrigger={true} />

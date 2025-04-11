@@ -98,5 +98,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "copyright": "2025 © City's Istanbul Residences - Tüm hakları saklıdır.",
+        "kvkk": "KVKK",
+        "commercialElectronicMessage": "Ticari Elektronik İleti Aydınlatma Metni",
+        "explicitConsent": "Açık Rıza Metni",
+        "kvkRelatedInformation": "KVKK İlişkin Aydınlatma Metni",
+        "cookiePolicy": "Çerez Politikası"
     }
 }

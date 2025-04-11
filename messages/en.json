@@ -98,5 +98,13 @@
                 }
             }
         }
+    },
+    "common": {
+        "copyright": "2025 © City's Istanbul Residences - All rights reserved.",
+        "kvkk": "Personal Data Protection Law",
+        "commercialElectronicMessage": "Commercial Electronic Message",
+        "explicitConsent": "Explicit Consent",
+        "kvkRelatedInformation": "PDPL Related Information",
+        "cookiePolicy": "Cookie Policy"
     }
 }

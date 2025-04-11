@@ -127,7 +127,7 @@ export default function Contact() {
               br: () => <br className="hidden lg:block" />,
             })}
           </h2>
-          <div className="lg:px-12 xl:px-0 pb-12 lg:pb-0 xl:pb-12">
+          <div className="lg:px-12 xl:px-0 pb-0 xl:pb-24">
             <ContactForm translations={formTranslations} />
           </div>
         </div>
