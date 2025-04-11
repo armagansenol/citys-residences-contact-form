@@ -1,4 +1,4 @@
-export const BASE_URL = "https://mvkgolf.azurewebsites.net"
+export const BASE_URL = "https://citysresidences.com"
 
 type FetchOptions = RequestInit & {
   cache?: RequestCache
