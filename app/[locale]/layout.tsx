@@ -97,6 +97,20 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <head>
         <StyleVariables colors={colors} themes={themes} />
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}');
+            `,
+          }}
+        />
       </head>
       <body className={`${halenoir.variable} ${lexendGiga.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
