@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import Image from "next/image"
 
 import { ContactForm } from "@/components/form-contact"
@@ -8,6 +8,7 @@ import { FormTranslations } from "@/types"
 
 export default function Contact() {
   const t = useTranslations("contact")
+  const locale = useLocale()
 
   const formTranslations: FormTranslations = {
     inputs: {
@@ -120,7 +121,13 @@ export default function Contact() {
       <div className="col-span-1 xl:h-screen flex flex-col">
         <div className="flex flex-col items-center justify-center xl:items-start gap-6 lg:gap-8 px-4 lg:px-12 pb-8 lg:pb-0 xl:mt-40 pt-6 lg:pt-0">
           <div className="xl:hidden col-span-1 -mx-4 lg:-mx-12 py-4 lg:py-8 px-4 lg:px-64 xl:px-32 flex items-center justify-center">
-            <Image src="/img/yasama-sanati.png" alt="Contact Form Image" width={1500} height={1500} />
+            {locale === "tr" ? (
+              <Image src="/img/yasama-sanati.png" alt="Contact Form Image" width={1500} height={1500} />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center px-8 xl:px-20">
+                <Image src="/img/art-of-living.png" alt="Contact Form Image" width={1500} height={1500} />
+              </div>
+            )}
           </div>
           <h2 className="text-neutral-900 text-base lg:text-sm font-normal font-halenoir text-left lg:text-center xl:text-left leading-normal">
             {t.rich("description", {
@@ -133,7 +140,13 @@ export default function Contact() {
         </div>
       </div>
       <div className="col-span-1 fixed top-0 right-0 w-1/2 h-full hidden xl:flex items-center px-16">
-        <Image src="/img/yasama-sanati.png" alt="Contact Form Image" width={1500} height={1500} />
+        {locale === "tr" ? (
+          <Image src="/img/yasama-sanati.png" alt="Contact Form Image" width={1500} height={1500} />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center px-20">
+            <Image src="/img/art-of-living.png" alt="Contact Form Image" width={1500} height={1500} />
+          </div>
+        )}
       </div>
     </div>
   )
