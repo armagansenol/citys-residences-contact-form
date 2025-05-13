@@ -19,7 +19,7 @@ export function Footer() {
       },
       {
         title: t("cookiePolicy"),
-        href: "/pdf/citys-residences-cerez-politikasi.docx",
+        href: "/pdf/citys-residences-cerez-politikasi.pdf",
       },
     ],
   }
