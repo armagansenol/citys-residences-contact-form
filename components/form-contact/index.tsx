@@ -9,7 +9,6 @@ import { z } from "zod"
 
 import { AnimatedButton } from "@/components/animated-button"
 import { ConsentCheckboxes } from "@/components/consent-checkboxes"
-import { DropdownMenuCheckboxesHear } from "@/components/dropdown-menu-hear"
 import { DropdownMenuCheckboxesRef, DropdownMenuCheckboxesResidences } from "@/components/dropdown-menu-residences"
 import { IconCheck, IconLoading } from "@/components/icons"
 import { InternationalPhoneInputComponent } from "@/components/international-phone-input"
@@ -23,6 +22,7 @@ import {
 } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { submitContactForm } from "@/lib/api/submit-contact-form"
 import { isPhoneValid } from "@/lib/utils"
@@ -147,11 +147,9 @@ export function ContactForm({ translations }: FormContactProps) {
   const [successDialog, setSuccessDialog] = useState(false)
 
   const residenceTypeDropdownRef = useRef<DropdownMenuCheckboxesRef>(null)
-  const howDidYouHearAboutUsDropdownRef = useRef<DropdownMenuCheckboxesRef>(null)
 
   const resetDropdowns = () => {
     residenceTypeDropdownRef.current?.reset()
-    howDidYouHearAboutUsDropdownRef.current?.reset()
   }
 
   const form = useForm<FormValues>({
@@ -176,7 +174,6 @@ export function ContactForm({ translations }: FormContactProps) {
   })
 
   const residenceTypeValue = form.watch("residenceType")
-  const howDidYouHearAboutUsValue = form.watch("howDidYouHearAboutUs")
 
   const mutation = useMutation({
     mutationFn: async (data: FormValues) => {
@@ -225,17 +222,6 @@ export function ContactForm({ translations }: FormContactProps) {
     []
   )
 
-  const howDidYouHearAboutUsOptions = useMemo(
-    () => [
-      { id: "reference", label: translations.inputs.howDidYouHearAboutUs.options.reference },
-      { id: "projectVisit", label: translations.inputs.howDidYouHearAboutUs.options.projectVisit },
-      { id: "internetSocialMedia", label: translations.inputs.howDidYouHearAboutUs.options.internetSocialMedia },
-      { id: "billboard", label: translations.inputs.howDidYouHearAboutUs.options.billboard },
-      { id: "newspaperMagazine", label: translations.inputs.howDidYouHearAboutUs.options.newspaperMagazine },
-    ],
-    [translations.inputs.howDidYouHearAboutUs.options]
-  )
-
   const handleResidenceType = useCallback(
     (id: string, checked: boolean) => {
       const option = residenceTypeOptions.find((opt) => opt.id === id)
@@ -254,26 +240,6 @@ export function ContactForm({ translations }: FormContactProps) {
       form.trigger("residenceType")
     },
     [form, residenceTypeOptions]
-  )
-
-  const handleHowDidYouHearAboutUs = useCallback(
-    (id: string, checked: boolean) => {
-      const option = howDidYouHearAboutUsOptions.find((opt) => opt.id === id)
-      if (!option) return
-
-      const currentValue = form.getValues("howDidYouHearAboutUs") || ""
-      const currentLabels = currentValue ? currentValue.split(",") : []
-      const newLabels = checked
-        ? [...currentLabels, option.label].filter(Boolean)
-        : currentLabels.filter((label) => label !== option.label)
-
-      form.setValue("howDidYouHearAboutUs", newLabels.join(","), {
-        shouldValidate: false,
-      })
-
-      form.trigger("howDidYouHearAboutUs")
-    },
-    [form, howDidYouHearAboutUsOptions]
   )
 
   useEffect(() => {
@@ -353,18 +319,25 @@ export function ContactForm({ translations }: FormContactProps) {
               <FormField
                 control={form.control}
                 name="howDidYouHearAboutUs"
-                render={() => (
+                render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <DropdownMenuCheckboxesHear
-                        placeholder={`${translations.inputs.howDidYouHearAboutUs.placeholder}*`}
-                        selectedItems={howDidYouHearAboutUsValue !== "" ? howDidYouHearAboutUsValue.split(",") : []}
-                        options={howDidYouHearAboutUsOptions}
-                        onChange={(id, checked) => {
-                          handleHowDidYouHearAboutUs(id, checked)
-                        }}
-                        ref={howDidYouHearAboutUsDropdownRef}
-                      />
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger className="h-10 w-full border border-bricky-brick-light px-2 lg:px-4 rounded-md text-base md:text-sm">
+                          <SelectValue placeholder={`${translations.inputs.howDidYouHearAboutUs.placeholder}*`} />
+                        </SelectTrigger>
+                        <SelectContent className="w-[var(--radix-select-trigger-width)] border-bricky-brick-light">
+                          {Object.entries(translations.inputs.howDidYouHearAboutUs.options).map(([key, label]) => (
+                            <SelectItem
+                              key={key}
+                              value={label}
+                              className="text-base md:text-sm cursor-pointer hover:bg-bricky-brick-light hover:text-black focus:bg-bricky-brick-light focus:text-black"
+                            >
+                              {label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
