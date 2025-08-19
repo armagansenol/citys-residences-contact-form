@@ -26,7 +26,7 @@ export function LegalLayout({ children }: LegalLayoutProps) {
           </div>
         </div>
       </div>
-      <div className="my-[var(--header-height)]">
+      <div className="lg:my-[var(--header-height)]">
         <div className="h-96 bg-slate-200 col-span-12 relative">
           <Img className="object-cover object-center" src="/img/hero.jpg" alt="Citys Residences" fill sizes="100vw" />
         </div>
