@@ -25,7 +25,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-white text-black font-halenoir relative lg:fixed bottom-0 left-0 right-0 px-4 lg:px-12">
+    <footer className="bg-white text-black font-halenoir relative lg:fixed bottom-0 left-0 right-0 px-4 lg:px-12 z-50">
       <div className="flex flex-col border-t border-bricky-brick-light">
         <div className="flex flex-col-reverse lg:flex-row justify-between items-center gap-5 py-5">
           <div className="lg:col-span-9 xl:col-span-8 text-center lg:text-left text-[0.8rem]">
