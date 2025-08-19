@@ -1,5 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Link } from "@/i18n/routing"
 import { useTranslations } from "next-intl"
 import { Control, UseFormReturn } from "react-hook-form"
 
@@ -59,34 +60,34 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
               <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
                 {t.rich("contact.form.inputs.consent.placeholder", {
                   legal1: (chunks) => (
-                    <a
+                    <Link
                       target="_blank"
                       rel="norefferer noopener"
-                      href="/pdf/citys-residences-kvkk-aydinlatma-metni.pdf"
+                      href="/pdpl/pdpl-related-information"
                       className="text-neutral-950 underline font-medium"
                     >
                       {chunks}
-                    </a>
+                    </Link>
                   ),
                   legal2: (chunks) => (
-                    <a
+                    <Link
                       target="_blank"
                       rel="norefferer noopener"
-                      href="/pdf/citys-residences-acik-riza-metni.pdf"
+                      href="/pdpl/explicit-consent"
                       className="text-neutral-950 underline font-medium"
                     >
                       {chunks}
-                    </a>
+                    </Link>
                   ),
                   legal3: (chunks) => (
-                    <a
+                    <Link
                       target="_blank"
                       rel="norefferer noopener"
-                      href="/pdf/citys-residences-ticari-elektronik-ileti-aydinlatma-metni.pdf"
+                      href="/pdpl/commercial-electronic-message"
                       className="text-neutral-950 underline font-medium"
                     >
                       {chunks}
-                    </a>
+                    </Link>
                   ),
                 })}
               </FormLabel>
@@ -114,14 +115,14 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
                 <FormLabel className="text-[0.8rem] text-neutral-950 font-normal leading-snug cursor-pointer max-w-[90%]">
                   {t.rich("contact.form.inputs.consentElectronicMessage.placeholder", {
                     legal4: (chunks) => (
-                      <a
+                      <Link
                         target="_blank"
                         rel="norefferer noopener"
-                        href="/pdf/citys-residences-acik-riza-beyani.pdf"
+                        href="/pdpl/explicit-consent"
                         className="text-neutral-950 underline font-medium"
                       >
                         {chunks}
-                      </a>
+                      </Link>
                     ),
                   })}
                 </FormLabel>
@@ -155,40 +156,40 @@ export function ConsentCheckboxes({ control, className, form }: ConsentCheckboxe
                       {name === "consentSms" &&
                         t.rich("contact.form.inputs.consentSms.placeholder", {
                           Clarification: (chunks) => (
-                            <a
+                            <Link
                               target="_blank"
                               rel="norefferer noopener"
-                              href="/pdf/kvkk-aydinlatma-metni.pdf"
+                              href="/pdpl/pdpl-related-information"
                               className="text-neutral-950 underline"
                             >
                               {chunks}
-                            </a>
+                            </Link>
                           ),
                         })}
                       {name === "consentEmail" &&
                         t.rich("contact.form.inputs.consentEmail.placeholder", {
                           Clarification: (chunks) => (
-                            <a
+                            <Link
                               target="_blank"
                               rel="norefferer noopener"
-                              href="/pdf/kvkk-aydinlatma-metni.pdf"
+                              href="/pdpl/pdpl-related-information"
                               className="text-neutral-950 underline"
                             >
                               {chunks}
-                            </a>
+                            </Link>
                           ),
                         })}
                       {name === "consentPhone" &&
                         t.rich("contact.form.inputs.consentPhone.placeholder", {
                           Clarification: (chunks) => (
-                            <a
+                            <Link
                               target="_blank"
                               rel="norefferer noopener"
-                              href="/pdf/kvkk-aydinlatma-metni.pdf"
+                              href="/pdpl/pdpl-related-information"
                               className="text-neutral-950 underline"
                             >
                               {chunks}
-                            </a>
+                            </Link>
                           ),
                         })}
                     </FormLabel>

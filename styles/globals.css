@@ -74,3 +74,12 @@ body {
     background: linear-gradient(to left, var(--white) 30%, transparent);
   }
 }
+
+.section-padding {
+  @apply px-0 md:px-10 xl:px-16;
+}
+
+.section-container {
+  @extend .section-padding;
+  @apply xl:container;
+}

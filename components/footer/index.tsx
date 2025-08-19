@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl"
-import Link from "next/link"
+import { Link, type Pathnames } from "@/i18n/routing"
 
 export function Footer() {
   const t = useTranslations("common")
@@ -7,19 +7,19 @@ export function Footer() {
     legal: [
       {
         title: t("kvkRelatedInformation"),
-        href: "/pdf/citys-residences-kvkk-aydinlatma-metni.pdf",
+        href: "/pdpl/pdpl-related-information" as Pathnames,
       },
       {
         title: t("explicitConsent"),
-        href: "/pdf/citys-residences-acik-riza-metni.pdf",
+        href: "/pdpl/explicit-consent" as Pathnames,
       },
       {
         title: t("commercialElectronicMessage"),
-        href: "/pdf/citys-residences-ticari-elektronik-ileti-aydinlatma-metni.pdf",
+        href: "/pdpl/commercial-electronic-message" as Pathnames,
       },
       {
         title: t("cookiePolicy"),
-        href: "/pdf/citys-residences-cerez-politikasi.pdf",
+        href: "/pdpl/cookie-policy" as Pathnames,
       },
     ],
   }
