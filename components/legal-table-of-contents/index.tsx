@@ -26,7 +26,7 @@ export function LegalTableOfContents() {
   ]
 
   return (
-    <div className="flex flex-col space-y-2 sticky top-20">
+    <div className="flex flex-col space-y-2 sticky top-36">
       {legalRoutes.map((route) => {
         const isActive = pathname.includes(route.href)
         return (
