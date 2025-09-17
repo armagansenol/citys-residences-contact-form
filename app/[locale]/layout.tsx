@@ -71,6 +71,9 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   return {
     title: t("title"),
     description: t("description"),
+    verification: {
+      google: "google918f2bcab83a8f97",
+    },
     icons: {
       icon: [
         { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
