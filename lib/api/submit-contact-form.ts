@@ -20,7 +20,7 @@ export async function submitContactForm(data: FormValues, locale: string) {
   // Add complete URL to formData
   formData.append("url", window.location.href)
 
-  const response = await fetch("https://crm.citysresidences.com/api/lead.php", {
+  const response = await fetch("https://panel.citysresidences.com/api/lead.php", {
     method: "POST",
     body: formData,
   })
