@@ -34,12 +34,7 @@ const getFormSchema = (translations: FormTranslations) =>
       name: z.string().min(2, { message: translations.inputs.name.errors.required }),
       surname: z.string().min(2, { message: translations.inputs.surname.errors.required }),
       countryCode: z.string(),
-      phone: z.string().refine(
-        (val) => {
-          return isPhoneValid(val)
-        },
-        { message: translations.inputs.phone.errors.required }
-      ),
+      phone: z.string(),
       email: z
         .string()
         .min(1, { message: translations.inputs.email.errors.required })
@@ -55,6 +50,15 @@ const getFormSchema = (translations: FormTranslations) =>
       consentEmail: z.boolean(),
       consentPhone: z.boolean(),
     })
+    .refine(
+      (data) => {
+        return isPhoneValid(data.phone, data.countryCode)
+      },
+      {
+        message: translations.inputs.phone.errors.required,
+        path: ["phone"],
+      }
+    )
     .refine(
       (data) => {
         if (data.consentElectronicMessage) {
@@ -87,7 +91,7 @@ const FormInput = ({ name, control, placeholder, type = "text", className }: For
     name={name}
     render={({ field }) => (
       <FormItem>
-        <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
+        <FormLabel className='text-neutral-950 font-normal leading-none block text-base md:text-sm'>
           {placeholder}
         </FormLabel>
         <FormControl>
@@ -157,7 +161,7 @@ export function ContactForm({ translations }: FormContactProps) {
     defaultValues: {
       name: "",
       surname: "",
-      countryCode: "",
+      countryCode: "90", // Default to Turkey country code
       phone: "",
       email: "",
       residenceType: "",
@@ -261,42 +265,48 @@ export function ContactForm({ translations }: FormContactProps) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
-          className="font-halenoir space-y-6 lg:space-y-6"
+          className='font-halenoir space-y-6 lg:space-y-6'
           noValidate
         >
-          <div className="flex flex-col lg:grid grid-flow-col gap-6 lg:gap-4 md:grid-cols-2">
-            <FormInput control={form.control} name="name" placeholder={`${translations.inputs.name.placeholder}*`} />
+          <div className='flex flex-col lg:grid grid-flow-col gap-6 lg:gap-4 md:grid-cols-2'>
+            <FormInput control={form.control} name='name' placeholder={`${translations.inputs.name.placeholder}*`} />
             <FormInput
               control={form.control}
-              name="surname"
+              name='surname'
               placeholder={`${translations.inputs.surname.placeholder}*`}
             />
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4">
-            <div className="col-span-1 flex flex-col gap-1">
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-4'>
+            <div className='col-span-1 flex flex-col gap-1'>
               <FormLabel
-                className="text-neutral-950 font-normal leading-none block text-base md:text-sm"
-                htmlFor="phone"
+                className='text-neutral-950 font-normal leading-none block text-base md:text-sm'
+                htmlFor='phone'
               >
                 {`${locale === "tr" ? "Telefon Numarası" : "Telephone Number"}*`}
               </FormLabel>
               <InternationalPhoneInputComponent form={form} />
+              {/* Hidden field to ensure countryCode is properly tracked by react-hook-form */}
+              <FormField
+                control={form.control}
+                name='countryCode'
+                render={({ field }) => <input type='hidden' {...field} />}
+              />
             </div>
-            <div className="col-span-1">
+            <div className='col-span-1'>
               <FormInput
                 control={form.control}
-                name="email"
-                type="email"
+                name='email'
+                type='email'
                 placeholder={`${locale === "tr" ? "E-Posta" : "Email"}*`}
-                className="col-span-1 md:col-span-1"
+                className='col-span-1 md:col-span-1'
               />
             </div>
           </div>
-          <div className="flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4">
-            <div className="space-y-1">
+          <div className='flex flex-col lg:grid grid-cols-2 gap-6 lg:gap-4'>
+            <div className='space-y-1'>
               <FormField
                 control={form.control}
-                name="residenceType"
+                name='residenceType'
                 render={() => (
                   <FormItem>
                     <FormControl>
@@ -315,23 +325,23 @@ export function ContactForm({ translations }: FormContactProps) {
                 )}
               />
             </div>
-            <div className="space-y-1">
+            <div className='space-y-1'>
               <FormField
                 control={form.control}
-                name="howDidYouHearAboutUs"
+                name='howDidYouHearAboutUs'
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Select value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger className="h-10 w-full border border-bricky-brick-light px-2 lg:px-4 rounded-md text-base md:text-sm">
+                        <SelectTrigger className='h-10 w-full border border-bricky-brick-light px-2 lg:px-4 rounded-md text-base md:text-sm'>
                           <SelectValue placeholder={`${translations.inputs.howDidYouHearAboutUs.placeholder}*`} />
                         </SelectTrigger>
-                        <SelectContent className="w-[var(--radix-select-trigger-width)] border-bricky-brick-light">
+                        <SelectContent className='w-[var(--radix-select-trigger-width)] border-bricky-brick-light'>
                           {Object.entries(translations.inputs.howDidYouHearAboutUs.options).map(([key, label]) => (
                             <SelectItem
                               key={key}
                               value={label}
-                              className="text-base md:text-sm cursor-pointer hover:bg-bricky-brick-light hover:text-black focus:bg-bricky-brick-light focus:text-black"
+                              className='text-base md:text-sm cursor-pointer hover:bg-bricky-brick-light hover:text-black focus:bg-bricky-brick-light focus:text-black'
                             >
                               {label}
                             </SelectItem>
@@ -345,13 +355,13 @@ export function ContactForm({ translations }: FormContactProps) {
               />
             </div>
           </div>
-          <div className="grid grid-flow-col">
+          <div className='grid grid-flow-col'>
             <FormField
               control={form.control}
-              name="message"
+              name='message'
               render={({ field }) => (
-                <FormItem className="space-y-1 pt-2">
-                  <FormLabel className="text-neutral-950 font-normal leading-none block text-base md:text-sm">
+                <FormItem className='space-y-1 pt-2'>
+                  <FormLabel className='text-neutral-950 font-normal leading-none block text-base md:text-sm'>
                     {translations.inputs.message.placeholder}
                   </FormLabel>
                   <FormControl>
@@ -368,30 +378,30 @@ export function ContactForm({ translations }: FormContactProps) {
 
           <ConsentCheckboxes form={form} control={form.control} />
 
-          <button type="submit" disabled={mutation.isPending} className="flex relative">
+          <button type='submit' disabled={mutation.isPending} className='flex relative'>
             <AnimatedButton text={translations.submit.default} />
             {mutation.isPending && (
-              <span className="absolute top-1/2 -right-4 -translate-y-1/2 translate-x-full flex items-center justify-center w-6 h-6">
-                <IconLoading fill="var(--bricky-brick)" />
+              <span className='absolute top-1/2 -right-4 -translate-y-1/2 translate-x-full flex items-center justify-center w-6 h-6'>
+                <IconLoading fill='var(--bricky-brick)' />
               </span>
             )}
           </button>
         </form>
       </Form>
       <Dialog open={successDialog} onOpenChange={setSuccessDialog}>
-        <DialogContent className="font-halenoir flex flex-col items-center justify-center py-8">
+        <DialogContent className='font-halenoir flex flex-col items-center justify-center py-8'>
           <DialogHeader>
-            <DialogTitle className="text-neutral-950 font-medium leading-none text-base lg:text-2xl flex flex-col items-center gap-2 text-center mb-2">
-              <div className="w-9 h-9 flex items-center justify-center">
+            <DialogTitle className='text-neutral-950 font-medium leading-none text-base lg:text-2xl flex flex-col items-center gap-2 text-center mb-2'>
+              <div className='w-9 h-9 flex items-center justify-center'>
                 <IconCheck />
               </div>
               {translations.messages.successDialog.title}
             </DialogTitle>
-            <DialogDescription className="text-neutral-950 font-normal leading-none block text-sm lg:text-base text-center pb-10">
+            <DialogDescription className='text-neutral-950 font-normal leading-none block text-sm lg:text-base text-center pb-10'>
               {translations.messages.successDialog.description}
             </DialogDescription>
             <DialogClose asChild>
-              <button className="text-neutral-950 underline text-sm lg:text-base" type="button">
+              <button className='text-neutral-950 underline text-sm lg:text-base' type='button'>
                 {translations.messages.successDialog.button}
               </button>
             </DialogClose>

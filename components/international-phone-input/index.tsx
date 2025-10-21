@@ -12,11 +12,22 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
   return (
     <FormField
       control={form.control}
-      name="phone"
+      name='phone'
       render={({ field }) => (
         <FormItem>
           <FormControl>
-            <PhoneInput value={field.value} onChange={(phone) => field.onChange(phone)} phoneInputRef={field.ref} />
+            <PhoneInput
+              value={field.value}
+              onChange={(phone, countryCode) => {
+                field.onChange(phone)
+                form.setValue("countryCode", countryCode, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                })
+              }}
+              phoneInputRef={field.ref}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>

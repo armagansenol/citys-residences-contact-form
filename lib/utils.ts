@@ -22,8 +22,14 @@ export const getUtmParameter = (param: string) => {
 
 const phoneUtil = PhoneNumberUtil.getInstance()
 
-export const isPhoneValid = (phone: string) => {
+export const isPhoneValid = (phone: string, countryCode?: string) => {
   try {
+    if (countryCode && phone) {
+      // If we have country code, create the full phone number for validation
+      const fullPhone = countryCode.startsWith("+") ? `${countryCode}${phone}` : `+${countryCode}${phone}`
+      return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(fullPhone))
+    }
+    // Fallback to original validation if no country code provided
     return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(phone))
   } catch (error) {
     console.log("error", error)
