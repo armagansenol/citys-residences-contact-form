@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ICountry } from "@countrystatecity/countries"
+import { ICountry, IState } from "country-state-city"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useLocale } from "next-intl"
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
@@ -25,7 +25,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { IState } from "@countrystatecity/countries"
 import { submitContactForm } from "@/lib/api/submit-contact-form"
 import { isPhoneValid } from "@/lib/utils"
 import { FormTranslations } from "@/types"
@@ -177,8 +176,8 @@ export function ContactForm({ translations, countries }: FormContactProps) {
   // Sort countries by localized name
   const sortedCountries = useMemo(() => {
     return [...countries].sort((a, b) => {
-      const nameA = getLocalizedCountryName(a.iso2, a.name)
-      const nameB = getLocalizedCountryName(b.iso2, b.name)
+      const nameA = getLocalizedCountryName(a.isoCode, a.name)
+      const nameB = getLocalizedCountryName(b.isoCode, b.name)
       return nameA.localeCompare(nameB, locale)
     })
   }, [countries, getLocalizedCountryName, locale])
@@ -360,9 +359,11 @@ export function ContactForm({ translations, countries }: FormContactProps) {
                         value={field.value}
                         onValueChange={(value) => {
                           // Find the country to get its code
-                          const country = sortedCountries.find((c) => getLocalizedCountryName(c.iso2, c.name) === value)
+                          const country = sortedCountries.find(
+                            (c) => getLocalizedCountryName(c.isoCode, c.name) === value
+                          )
                           if (country) {
-                            setSelectedCountryCode(country.iso2)
+                            setSelectedCountryCode(country.isoCode)
                           }
                           field.onChange(value)
                           form.setValue("city", "") // Reset city when country changes
@@ -374,11 +375,11 @@ export function ContactForm({ translations, countries }: FormContactProps) {
                         <SelectContent className='w-[var(--radix-select-trigger-width)] border-bricky-brick-light max-h-[300px]'>
                           {sortedCountries.map((country) => (
                             <SelectItem
-                              key={country.iso2}
-                              value={getLocalizedCountryName(country.iso2, country.name)}
+                              key={country.isoCode}
+                              value={getLocalizedCountryName(country.isoCode, country.name)}
                               className='text-base md:text-sm cursor-pointer hover:bg-bricky-brick-light hover:text-black focus:bg-bricky-brick-light focus:text-black'
                             >
-                              {getLocalizedCountryName(country.iso2, country.name)}
+                              {getLocalizedCountryName(country.isoCode, country.name)}
                             </SelectItem>
                           ))}
                         </SelectContent>

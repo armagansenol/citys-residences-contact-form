@@ -1,10 +1,10 @@
 "use server"
 
-import { getCountries, getAllCitiesOfCountry, ICity, ICountry } from "@countrystatecity/countries"
+import { Country, State, ICountry, IState } from "country-state-city"
 
 export async function fetchCountries(): Promise<ICountry[]> {
   try {
-    const countries = await getCountries()
+    const countries = Country.getAllCountries()
     return countries
   } catch (error) {
     console.error("Error fetching countries:", error)
@@ -12,19 +12,18 @@ export async function fetchCountries(): Promise<ICountry[]> {
   }
 }
 
-export async function fetchCities(countryCode: string): Promise<ICity[]> {
+export async function fetchStates(countryCode: string): Promise<IState[]> {
   try {
     // Ensure countryCode is valid before calling the library
     if (!countryCode || typeof countryCode !== "string") {
-      console.warn("Invalid country code provided to fetchCities")
+      console.warn("Invalid country code provided to fetchStates")
       return []
     }
 
-    // Use the imported function directly
-    const cities = await getAllCitiesOfCountry(countryCode)
-    return cities
+    const states = State.getStatesOfCountry(countryCode)
+    return states
   } catch (error) {
-    console.error("Error fetching cities:", error)
+    console.error("Error fetching states:", error)
     return []
   }
 }

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-
-// Force Node.js runtime for file system access required by the library
-export const runtime = "nodejs"
+import { State } from "country-state-city"
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -12,9 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Dynamic import to ensure proper module resolution at runtime
-    const { getStatesOfCountry } = await import("@countrystatecity/countries")
-    const states = await getStatesOfCountry(countryCode)
+    const states = State.getStatesOfCountry(countryCode)
     return NextResponse.json(states)
   } catch (error) {
     console.error("Error fetching states:", error)
