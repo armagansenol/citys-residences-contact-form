@@ -246,6 +246,7 @@ export interface FormTranslations {
     default: string
     sending: string
   }
+  loading: string
   messages: {
     error: string
     success: string

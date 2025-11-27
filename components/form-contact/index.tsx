@@ -405,7 +405,7 @@ export function ContactForm({ translations, countries }: FormContactProps) {
                         <SelectTrigger className='h-10 w-full border border-bricky-brick-light px-2 lg:px-4 rounded-md text-base md:text-sm disabled:opacity-50'>
                           <SelectValue
                             placeholder={
-                              isLoadingCities ? translations.submit.sending : `${translations.inputs.city.placeholder}*`
+                              isLoadingCities ? translations.loading : `${translations.inputs.city.placeholder}*`
                             }
                           />
                         </SelectTrigger>

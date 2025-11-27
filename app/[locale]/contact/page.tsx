@@ -94,6 +94,7 @@ export default async function Contact({ params: { locale } }: { params: { locale
       default: t("form.submit.default"),
       sending: t("form.submit.sending"),
     },
+    loading: t("form.loading"),
     messages: {
       error: t("form.messages.error"),
       success: t("form.messages.success"),
