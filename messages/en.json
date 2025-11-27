@@ -40,6 +40,18 @@
                         "email": "Please enter a valid email address"
                     }
                 },
+                "country": {
+                    "placeholder": "Country",
+                    "errors": {
+                        "required": "Required field"
+                    }
+                },
+                "city": {
+                    "placeholder": "City",
+                    "errors": {
+                        "required": "Required field"
+                    }
+                },
                 "residenceType": {
                     "placeholder": "Preferred Residence Type",
                     "errors": {

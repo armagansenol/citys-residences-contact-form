@@ -227,6 +227,8 @@ export interface FormTranslations {
       }
     }
     email: { placeholder: string; errors: { required: string; email: string } }
+    country: { placeholder: string; errors: { required: string } }
+    city: { placeholder: string; errors: { required: string } }
     residenceType: { placeholder: string; errors: { required: string } }
     howDidYouHearAboutUs: {
       placeholder: string
