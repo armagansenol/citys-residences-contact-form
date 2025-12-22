@@ -42,6 +42,7 @@
                 },
                 "country": {
                     "placeholder": "Ülke Seçiniz",
+                    "searchPlaceholder": "Ülke seçiniz",
                     "errors": {
                         "required": "Zorunlu alan"
                     }

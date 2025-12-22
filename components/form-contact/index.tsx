@@ -332,7 +332,10 @@ export function ContactForm({ translations, countries }: FormContactProps) {
               >
                 {`${locale === "tr" ? "Telefon Numarası" : "Telephone Number"}*`}
               </FormLabel>
-              <InternationalPhoneInputComponent form={form} />
+              <InternationalPhoneInputComponent
+                form={form}
+                searchPlaceholder={translations.inputs.country.searchPlaceholder}
+              />
               {/* Hidden field to ensure countryCode is properly tracked by react-hook-form */}
               <FormField
                 control={form.control}

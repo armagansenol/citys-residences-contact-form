@@ -6,12 +6,19 @@ import { Combobox, ComboboxOption } from "@/components/ui/combobox"
 
 interface PhoneInputProps {
   locale?: string
+  searchPlaceholder?: string
   value: string
   onChange: (phone: string, countryCode: string) => void
   phoneInputRef?: React.Ref<HTMLInputElement>
 }
 
-export const PhoneInput: React.FC<PhoneInputProps> = ({ locale, value, onChange, phoneInputRef }) => {
+export const PhoneInput: React.FC<PhoneInputProps> = ({
+  locale,
+  searchPlaceholder,
+  value,
+  onChange,
+  phoneInputRef,
+}) => {
   const cleanPhoneNumber = (phone: string, dialCode: string): string => {
     // Remove the country code and + prefix from the phone number
     if (phone.startsWith(`+${dialCode}`)) {
@@ -130,7 +137,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ locale, value, onChange,
           }
         }}
         placeholder='Code'
-        searchPlaceholder='Search country...'
+        searchPlaceholder={searchPlaceholder ?? "Search country..."}
         emptyMessage='No country found.'
         triggerClassName='w-24 h-10 rounded-md text-bricky-brick font-medium cursor-pointer text-base md:text-sm border border-bricky-brick-light'
         contentClassName='border-bricky-brick-light max-h-[300px] min-w-[280px]'

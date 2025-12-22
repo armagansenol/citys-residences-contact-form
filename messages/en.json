@@ -42,6 +42,7 @@
                 },
                 "country": {
                     "placeholder": "Country",
+                    "searchPlaceholder": "Search country...",
                     "errors": {
                         "required": "Required field"
                     }

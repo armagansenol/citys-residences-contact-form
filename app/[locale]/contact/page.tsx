@@ -38,6 +38,7 @@ export default async function Contact({ params: { locale } }: { params: { locale
       },
       country: {
         placeholder: t("form.inputs.country.placeholder"),
+        searchPlaceholder: t("form.inputs.country.searchPlaceholder"),
         errors: {
           required: t("form.inputs.country.errors.required"),
         },

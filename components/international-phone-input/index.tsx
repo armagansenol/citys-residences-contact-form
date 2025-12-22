@@ -8,9 +8,10 @@ import { PhoneInput } from "./phone-input"
 
 export interface InternationalPhoneInputProps {
   form: UseFormReturn<any> // eslint-disable-line @typescript-eslint/no-explicit-any
+  searchPlaceholder: string
 }
 
-export function InternationalPhoneInputComponent({ form }: InternationalPhoneInputProps) {
+export function InternationalPhoneInputComponent({ form, searchPlaceholder }: InternationalPhoneInputProps) {
   const locale = useLocale()
 
   return (
@@ -22,6 +23,7 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
           <FormControl>
             <PhoneInput
               locale={locale}
+              searchPlaceholder={searchPlaceholder}
               value={field.value}
               onChange={(phone, countryCode) => {
                 field.onChange(phone)
