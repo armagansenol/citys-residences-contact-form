@@ -5,12 +5,13 @@ import { Input } from "@/components/ui/input"
 import { Combobox, ComboboxOption } from "@/components/ui/combobox"
 
 interface PhoneInputProps {
+  locale?: string
   value: string
   onChange: (phone: string, countryCode: string) => void
   phoneInputRef?: React.Ref<HTMLInputElement>
 }
 
-export const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, phoneInputRef }) => {
+export const PhoneInput: React.FC<PhoneInputProps> = ({ locale, value, onChange, phoneInputRef }) => {
   const cleanPhoneNumber = (phone: string, dialCode: string): string => {
     // Remove the country code and + prefix from the phone number
     if (phone.startsWith(`+${dialCode}`)) {
@@ -50,10 +51,24 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, phoneIn
 
   // Parse all countries and sort them alphabetically
   const parsedCountries = useMemo(() => {
-    return defaultCountries
-      .map((c) => parseCountry(c))
-      .sort((a, b) => a.name.localeCompare(b.name))
+    return defaultCountries.map((c) => parseCountry(c)).sort((a, b) => a.name.localeCompare(b.name))
   }, [])
+
+  const regionNames = useMemo(() => {
+    if (!locale) return null
+
+    try {
+      return new Intl.DisplayNames([locale], { type: "region" })
+    } catch {
+      return null
+    }
+  }, [locale])
+
+  const getLocalizedCountryName = (iso2: string, fallback: string) => {
+    const standardIso = iso2?.toUpperCase() ?? iso2
+    const localized = regionNames?.of(standardIso)
+    return localized || fallback
+  }
 
   // Find Turkey and create priority option
   const turkeyCountry = useMemo(() => {
@@ -61,8 +76,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, phoneIn
   }, [parsedCountries])
 
   // Create a label for a country (used for both display and as value for filtering)
-  const getCountryLabel = (country: { name: string; dialCode: string | number }) =>
-    `${country.name} (+${country.dialCode})`
+  const getCountryLabel = (country: { iso2: string; name: string; dialCode: string | number }) => {
+    const name = getLocalizedCountryName(country.iso2, country.name)
+    return `${name} (+${country.dialCode})`
+  }
 
   const turkeyOption: ComboboxOption | undefined = turkeyCountry
     ? {
@@ -79,13 +96,13 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, phoneIn
         value: getCountryLabel(country),
         label: getCountryLabel(country),
       }))
-  }, [parsedCountries])
+  }, [parsedCountries, regionNames])
 
   // Get current country's label for the combobox value
   const currentCountryLabel = useMemo(() => {
     const current = parsedCountries.find((c) => c.iso2 === phoneInput.country.iso2)
     return current ? getCountryLabel(current) : ""
-  }, [parsedCountries, phoneInput.country.iso2])
+  }, [parsedCountries, phoneInput.country.iso2, regionNames])
 
   // Find country by label to get iso2 code
   const findCountryByLabel = (label: string) => {

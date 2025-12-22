@@ -2,6 +2,8 @@
 
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { UseFormReturn } from "react-hook-form"
+import { useLocale } from "next-intl"
+
 import { PhoneInput } from "./phone-input"
 
 export interface InternationalPhoneInputProps {
@@ -9,6 +11,8 @@ export interface InternationalPhoneInputProps {
 }
 
 export function InternationalPhoneInputComponent({ form }: InternationalPhoneInputProps) {
+  const locale = useLocale()
+
   return (
     <FormField
       control={form.control}
@@ -17,6 +21,7 @@ export function InternationalPhoneInputComponent({ form }: InternationalPhoneInp
         <FormItem>
           <FormControl>
             <PhoneInput
+              locale={locale}
               value={field.value}
               onChange={(phone, countryCode) => {
                 field.onChange(phone)
