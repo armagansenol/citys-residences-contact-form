@@ -235,6 +235,7 @@ export interface FormTranslations {
       errors: { required: string }
       options: Record<string, string>
     }
+    profession: { placeholder: string }
     consent: { placeholder: string; errors: { required: string } }
     consentElectronicMessage: { placeholder: string; errors: { required: string } }
     consentSms: { placeholder: string }

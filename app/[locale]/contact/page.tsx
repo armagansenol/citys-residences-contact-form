@@ -67,6 +67,7 @@ export default async function Contact({ params: { locale } }: { params: { locale
           newspaperMagazine: t("form.inputs.howDidYouHearAboutUs.options.newspaperMagazine"),
         },
       },
+      profession: { placeholder: t("form.inputs.profession.placeholder") },
       message: { placeholder: t("form.inputs.message.placeholder") },
       consent: {
         placeholder: t("form.inputs.consent.placeholder"),

@@ -71,6 +71,9 @@
                         "newspaperMagazine": "Newspaper / Magazine"
                     }
                 },
+                "profession": {
+                    "placeholder": "Profession"
+                },
                 "message": {
                     "placeholder": "Message"
                 },
